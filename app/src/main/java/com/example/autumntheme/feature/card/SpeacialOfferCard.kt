@@ -42,7 +42,7 @@ val DarkBlue = Color(0xFF18314D)
 
 @Composable
 fun SpecialOfferCard(modifier: Modifier = Modifier,    hazeState: HazeState,
-                     imgPlaceholder: Int, title: String) {
+                     imgPlaceholder: Int, title: String, theme: CardTheme = AutumnTheme) {
     ElevatedCard(
         modifier = modifier
             .width(150.dp)
@@ -50,7 +50,7 @@ fun SpecialOfferCard(modifier: Modifier = Modifier,    hazeState: HazeState,
             ,
 
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = DeepBrown)
+        colors = CardDefaults.cardColors(containerColor = theme.cardBackgroundColor)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             AsyncImage(
@@ -63,10 +63,9 @@ fun SpecialOfferCard(modifier: Modifier = Modifier,    hazeState: HazeState,
                     .hazeEffect(
                         state = hazeState,
                         style = HazeStyle(
-                            backgroundColor = DeepBrown,
-                            tint = HazeTint(DeepBrown.copy(alpha = 0.5f)),
-                            blurRadius = 30.dp,
-                            noiseFactor = 0.05f
+                            backgroundColor = theme.cardBackgroundColor,
+                            tint = HazeTint(theme.cardBackgroundColor.copy(alpha = 0.5f)),
+                            blurRadius = 20.dp,
                         )
                     )
                     .weight(0.7f),
@@ -80,7 +79,7 @@ fun SpecialOfferCard(modifier: Modifier = Modifier,    hazeState: HazeState,
             ) {
                 Text(
                     text = title,
-                    color = WarmCream,
+                    color = theme.secondaryTextColor,
                     fontSize = 14.sp,
                     lineHeight = 14.sp,
                     fontWeight = FontWeight.Medium
@@ -91,27 +90,27 @@ fun SpecialOfferCard(modifier: Modifier = Modifier,    hazeState: HazeState,
 }
 
 @Composable
-fun offercardcarousel(modifier: Modifier = Modifier,  hazeState: HazeState,) {
+fun offercardcarousel(modifier: Modifier = Modifier,  hazeState: HazeState, theme: CardTheme = AutumnTheme) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
-            SpecialOfferCard(imgPlaceholder = R.drawable.img_so1, title = "get 50% Off at Clinic",        hazeState = hazeState, modifier = Modifier.padding(start = 16.dp))
+            SpecialOfferCard(imgPlaceholder = R.drawable.img_def_offer1, title = "get 50% Off at Clinic",        hazeState = hazeState, modifier = Modifier.padding(start = 16.dp), theme = theme)
         }
         item {
-            SpecialOfferCard(imgPlaceholder = R.drawable.img_so2, title = "Pay with ACLEDA save 50% on Store",        hazeState = hazeState,)
+            SpecialOfferCard(imgPlaceholder = R.drawable.img_def_offer2, title = "Pay with ACLEDA save 50% on Store",        hazeState = hazeState, theme = theme)
         }
         item {
-            SpecialOfferCard(imgPlaceholder = R.drawable.img_so3, title = "Pay for fuel cheaper with ACLEDA ",        hazeState = hazeState,)
+            SpecialOfferCard(imgPlaceholder = R.drawable.img_def_offer3, title = "Pay for fuel cheaper with ACLEDA ",        hazeState = hazeState, theme = theme)
         }
         item {
-            SpecialOfferCard(imgPlaceholder = R.drawable.img_so4, title = "Discount up to 10% with ACLEDA Cards",        hazeState = hazeState,)
+            SpecialOfferCard(imgPlaceholder = R.drawable.img_def_offer4, title = "Discount up to 10% with ACLEDA Cards",        hazeState = hazeState, theme = theme)
         }
         item {
-            SpecialOfferCard(imgPlaceholder = R.drawable.img_so3, title = "Pay for fuel cheaper with ACLEDA ",        hazeState = hazeState,)
+            SpecialOfferCard(imgPlaceholder = R.drawable.img_def_offer3, title = "Pay for fuel cheaper with ACLEDA ",        hazeState = hazeState, theme = theme)
         }
         item {
-            SpecialOfferCard(imgPlaceholder = R.drawable.img_so4, title = "Discount up to 10% with ACLEDA Cards",        hazeState = hazeState, modifier = Modifier.padding(end = 16.dp))
+            SpecialOfferCard(imgPlaceholder = R.drawable.img_def_offer4, title = "Discount up to 10% with ACLEDA Cards",        hazeState = hazeState, modifier = Modifier.padding(end = 16.dp), theme = theme)
         }
     }
 }
@@ -122,7 +121,7 @@ private fun SpecialOfferCardPreview() {
     val hazeState = remember { HazeState() }
 
     SpecialOfferCard(
-        imgPlaceholder = R.drawable.img_so4,
+        imgPlaceholder = R.drawable.img_def_offer4,
         title = "A Special Promotion Offer",
         hazeState = hazeState
     )

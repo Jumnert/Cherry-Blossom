@@ -31,20 +31,19 @@ fun ImageCarousel(
 ) {
     val imageList = remember {
         listOf(
-            R.drawable.banner1,
-            R.drawable.banner2,
-            R.drawable.banner3,
-            R.drawable.banner4,
-            R.drawable.banner1,
-            R.drawable.banner2,
-            R.drawable.banner3,
-            R.drawable.banner4
+            R.drawable.img_def_banner1,
+            R.drawable.img_def_banner2,
+            R.drawable.img_def_banner3,
+            R.drawable.img_def_banner4,
+            R.drawable.img_def_banner1,
+            R.drawable.img_def_banner2,
+            R.drawable.img_def_banner3,
+            R.drawable.img_def_banner4
         )
     }
 
     val pagerState = rememberPagerState { imageList.size }
 
-    // Auto-scroll logic with safety check for user interaction
     LaunchedEffect(pagerState.isScrollInProgress) {
         if (!pagerState.isScrollInProgress) {
             while (true) {
@@ -89,7 +88,7 @@ fun ImageCarousel(
 
                         scaleY = scaleValue
                         scaleX = scaleValue
-                        alpha = lerp(0.8f, 1.0f, fraction)
+                        alpha = 1f
                     }
                     .clip(RoundedCornerShape(16.dp)),
                 contentScale = ContentScale.Crop
@@ -100,7 +99,7 @@ fun ImageCarousel(
 
         // 2. Dot Indicators
         Row(
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
             repeat(imageList.size) { index ->
@@ -108,10 +107,12 @@ fun ImageCarousel(
 
                 Box(
                     modifier = Modifier
-                        .size(if (isSelected) 8.dp else 6.dp)
+                        .padding(horizontal = 3.dp)
+                        .height(6.dp)
+                        .width(if (isSelected) 16.dp else 6.dp)
                         .clip(CircleShape)
                         .background(
-                            color = if (isSelected) Color(0xFFD4AF37) else Color.White.copy(alpha = 0.3f)
+                            color = if (isSelected) Color.White else Color.White.copy(alpha = 0.3f)
                         )
                 )
             }

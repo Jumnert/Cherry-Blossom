@@ -1,55 +1,56 @@
 package com.example.autumntheme.feature.card
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.lerp
 import coil.compose.AsyncImage
 import com.example.autumntheme.R
+import com.example.autumntheme.ui.theme.WarmCream
+import kotlinx.coroutines.delay
+import kotlin.math.absoluteValue
 
 @Composable
 fun PropertyCard(
     modifier: Modifier = Modifier,
     imagePlaceholder: Int,
     title: String,
-    profileImage: Int
+    profileImage: Int? = null,
+    isTourism: Boolean = false
 ) {
-
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-
-            // 1. BASE LAYER: perfectly sharp background image
             AsyncImage(
                 model = imagePlaceholder,
                 contentDescription = "Property Preview",
@@ -57,7 +58,6 @@ fun PropertyCard(
                 contentScale = ContentScale.Crop
             )
 
-            // 2. GRADIENT OVERLAY (Reduced complexity for performance)
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -65,8 +65,8 @@ fun PropertyCard(
                         brush = Brush.verticalGradient(
                             colors = listOf(
                                 Color.Transparent,
-                                Color.Black.copy(alpha = 0.3f),
-                                Color.Black.copy(alpha = 0.7f),
+                                Color.Black.copy(alpha = 0.2f),
+                                Color.Black.copy(alpha = 0.6f),
                             )
                         )
                     )
@@ -75,29 +75,46 @@ fun PropertyCard(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp), 
+                    .padding(12.dp),
                 verticalArrangement = Arrangement.Bottom
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    AsyncImage(
-                        model = profileImage,
-                        contentDescription = "Profile",
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(40.dp),
-                        contentScale = ContentScale.Crop
-                    )
+                    if (isTourism) {
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .background(Color.White.copy(alpha = 0.3f), CircleShape)
+                                .padding(4.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.LocationOn,
+                                contentDescription = "Location",
+                                tint = Color.White,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    } else if (profileImage != null) {
+                        AsyncImage(
+                            model = profileImage,
+                            contentDescription = "Profile",
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(36.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
 
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
 
                     Text(
                         text = title,
-                        fontSize = 14.sp,
-                        lineHeight = 18.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 13.sp,
+                        lineHeight = 16.sp,
+                        fontWeight = FontWeight.Medium,
                         color = Color.White,
                         modifier = Modifier.weight(1f),
                         maxLines = 2,
@@ -112,41 +129,99 @@ fun PropertyCard(
 data class CarouselItem(
     val title: String,
     val imagePlaceholder: Int,
-    val profileImage: Int
+    val profileImage: Int? = null
 )
 
 @Composable
 fun PropertyCarousel(
     modifier: Modifier = Modifier,
-    items: List<CarouselItem>
+    items: List<CarouselItem>,
+    isTourism: Boolean = false,
+    headerTitle: String? = null,
+    theme: CardTheme = AutumnTheme
 ) {
     if (items.isEmpty()) return
 
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
+    val pagerState = rememberPagerState { items.size }
 
-    val horizontalPadding = 0.dp
-    val cardSpacing = 0.dp
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(5000)
+            if (!pagerState.isScrollInProgress) {
+                val nextPage = (pagerState.currentPage + 1) % items.size
+                pagerState.animateScrollToPage(nextPage, animationSpec = tween(800))
+            }
+        }
+    }
 
-    // Dynamic scale math: Allocates clean proportions so 2 full items
-    // and exactly 40% of the 3rd item fit across any device screen width.
-    val calculatedCardWidth = (screenWidth - (horizontalPadding * 2) - (cardSpacing * 2)) / 2.4f
+    Column(modifier = modifier.fillMaxWidth()) {
+        if (headerTitle != null) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = headerTitle,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = theme.primaryTextColor
+                )
+                Icon(
+                    imageVector = Icons.Default.ChevronRight,
+                    contentDescription = "More",
+                    tint = theme.primaryTextColor,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
 
-    LazyRow(
-        modifier = modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(horizontal = horizontalPadding),
-        horizontalArrangement = Arrangement.spacedBy(cardSpacing)
-    ) {
-        items(items) { item ->
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(horizontal = 48.dp),
+            pageSpacing = 12.dp
+        ) { page ->
+            val item = items[page]
             PropertyCard(
                 modifier = Modifier
-                    .padding(start = 16.dp)
-                    .width(250.dp)
-                    .height(180.dp), // Feeds width dynamically into the Modifier chain above
-                title = item.title,
+                    .fillMaxWidth()
+                    .height(140.dp)
+                    .graphicsLayer {
+                        val pageOffset = ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
+                        val fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                        alpha = 1f
+                        scaleY = lerp(0.9f, 1f, fraction)
+                    },
                 imagePlaceholder = item.imagePlaceholder,
-                profileImage = item.profileImage
+                title = item.title,
+                profileImage = item.profileImage,
+                isTourism = isTourism
             )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            repeat(items.size) { index ->
+                val isSelected = pagerState.currentPage == index
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 3.dp)
+                        .height(6.dp)
+                        .width(if (isSelected) 16.dp else 6.dp)
+                        .clip(CircleShape)
+                        .background(
+                            if (isSelected) Color.White else Color.White.copy(alpha = 0.3f)
+                        )
+                )
+            }
         }
     }
 }
@@ -157,7 +232,7 @@ private fun previe12() {
     PropertyCard(
         modifier = Modifier.width(300.dp).height(180.dp),
         title = "Student in rural area studying at young age was captured by the moeys team",
-        imagePlaceholder = R.drawable.img_studentstudy,
-        profileImage = R.drawable.img_moeys
+        imagePlaceholder = R.drawable.img_def_student_study,
+        profileImage = R.drawable.img_def_moeys
     )
 }

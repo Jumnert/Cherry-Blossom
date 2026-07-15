@@ -20,6 +20,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import com.example.autumntheme.feature.card.AutumnTheme
+import com.example.autumntheme.feature.card.CardTheme
 import com.example.autumntheme.feature.home.CardColor
 import com.example.autumntheme.feature.home.DarkBlue
 import com.example.autumntheme.ui.theme.BorderTan
@@ -37,28 +40,14 @@ fun SectionCarousel(
     sections: List<CarouselSection>,
     modifier: Modifier = Modifier,
     onSectionClick: (CarouselSection) -> Unit = {},
-    hazeState: HazeState
+    hazeState: HazeState,
+    theme: CardTheme = AutumnTheme
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-//            .hazeEffect(
-//                state = hazeState,
-//                style = HazeStyle(
-//                    backgroundColor = DeepBrown,
-//                    tint = HazeTint(DeepBrown.copy(alpha = 0.5f)),
-//                    blurRadius = 30.dp,
-//                    noiseFactor = 0.05f
-//                )
-//            )
-            .padding(horizontal = 16.dp)
-//            .border(
-//                width = 2.dp,
-//                color = PumpkinOrange,
-//                shape = RoundedCornerShape(16.dp)
-//            )
-        ,
-        colors = CardDefaults.cardColors(containerColor = DeepBrown),
+            .padding(horizontal = 16.dp),
+        colors = CardDefaults.cardColors(containerColor = theme.cardBackgroundColor),
         shape = RoundedCornerShape(16.dp)
     ) {
         LazyRow(
@@ -67,10 +56,9 @@ fun SectionCarousel(
                 .hazeEffect(
                     state = hazeState,
                     style = HazeStyle(
-                        backgroundColor = DeepBrown,
-                        tint = HazeTint(DeepBrown.copy(alpha = 0.5f)),
-                        blurRadius = 30.dp,
-                        noiseFactor = 0.05f
+                        backgroundColor = theme.cardBackgroundColor,
+                        tint = HazeTint(theme.cardBackgroundColor.copy(alpha = 0.5f)),
+                        blurRadius = 20.dp,
                     )
                 ),
             contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),
@@ -79,9 +67,10 @@ fun SectionCarousel(
             items(sections) { section ->
                 CarouselItem(
                     name = section.name,
-                    icon = painterResource(id = section.iconRes),
+                    iconRes = section.iconRes,
                     onClick = { onSectionClick(section) },
-                    hazeState = hazeState
+                    hazeState = hazeState,
+                    theme = theme
                 )
             }
         }
@@ -91,10 +80,11 @@ fun SectionCarousel(
 @Composable
 fun CarouselItem(
     name: String,
-    icon: Painter,
+    iconRes: Int,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
-    hazeState: HazeState
+    hazeState: HazeState,
+    theme: CardTheme
 ) {
     Column(
         modifier = modifier
@@ -110,29 +100,19 @@ fun CarouselItem(
                 .size(52.dp)
                 .background(BorderTan, CircleShape)
                 .clip(RoundedCornerShape(16.dp))
-                .hazeEffect(
-                    state = hazeState,
-                    style = HazeStyle(
-                        backgroundColor = DeepBrown,
-                        tint = HazeTint(DeepBrown.copy(alpha = 0.6f)),
-                        blurRadius = 30.dp,
-                        noiseFactor = 0.05f
-                    )
-                )
                ,
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                painter = icon,
+            AsyncImage(
+                model = iconRes,
                 contentDescription = name,
-                modifier = Modifier.size(28.dp),
-                tint = Color.Unspecified
+                modifier = Modifier.size(28.dp)
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = name,
-            color = Color.White,
+            color = theme.secondaryTextColor,
             fontSize = 14.sp,
             fontWeight = FontWeight.Normal,
             maxLines = 1,

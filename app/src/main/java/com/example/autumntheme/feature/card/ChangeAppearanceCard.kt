@@ -1,6 +1,5 @@
 package com.example.autumntheme.feature.card
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -46,19 +45,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.autumntheme.R
 import com.example.autumntheme.ui.theme.AmberGold
 import com.example.autumntheme.ui.theme.BorderTan
 import com.example.autumntheme.ui.theme.CherryBlossomPink
+import com.example.autumntheme.ui.theme.CherryBlushPink
 import com.example.autumntheme.ui.theme.CherryDeepPink
 import com.example.autumntheme.ui.theme.CherryVibrantPink
 import com.example.autumntheme.ui.theme.DeepBrown
 import com.example.autumntheme.ui.theme.PumpkinOrange
 import com.example.autumntheme.ui.theme.WarmCream
 
-/**
- * Data class to define all theme-able properties of the card.
- */
 data class CardTheme(
     val name: String,
     val backgroundRes: Int,
@@ -69,79 +67,91 @@ data class CardTheme(
     val themeImages: List<Int>,
     val sheetContainerColor: Color,
     val sheetContentColor: Color,
+    val primaryTextColor: Color,
+    val cardBackgroundColor: Color,
+    val secondaryTextColor: Color,
+    val leafImageRes: Int,
+    val icWallet: Int,
+    val icScanner: Int,
+    val icTransfer: Int,
+    val icCard: Int,
+    val icDeposit: Int,
+    val icLoan: Int,
+    val icPayment: Int,
+    val icTopup: Int,
+    val icQuickCash: Int,
+    val icSchool: Int,
+    val icDepartment: Int,
+    val icExchange: Int
 )
 
-// 1. Current Dark Blue Theme
-val DarkBlueTheme = CardTheme(
-    name = "Dark Blue",
-    backgroundRes = R.drawable.theme_bgjpg,
-    buttonColor = Color(0xFF132D48),
-    buttonTextColor = Color.White,
-    themeImages = listOf(
-        R.drawable.img_theme1,
-        R.drawable.img_theme2,
-        R.drawable.img_theme3,
-        R.drawable.img_theme4,
-    ),
-    sheetContainerColor = Color(0xFF0F172A),
-    sheetContentColor = Color(0xFF1E293B)
-)
-
-// 2. Autumn Theme
 val AutumnTheme = CardTheme(
     name = "Autumn",
-    backgroundRes = R.drawable.banner4,
+    backgroundRes = R.drawable.img_autumn_background,
     buttonColor = PumpkinOrange,
     buttonTextColor = Color.White,
     iconBorderColor = AmberGold,
     iconCornerRadius = 12.dp,
     themeImages = listOf(
-        R.drawable.banner1,
-        R.drawable.banner4,
-        R.drawable.banner1,
-        R.drawable.banner4,
+        R.drawable.img_def_banner1,
+        R.drawable.img_def_banner4,
+        R.drawable.img_def_banner1,
+        R.drawable.img_def_banner4,
     ),
     sheetContainerColor = DeepBrown,
-    sheetContentColor = BorderTan
+    sheetContentColor = BorderTan,
+    primaryTextColor = DeepBrown,
+    cardBackgroundColor = DeepBrown,
+    secondaryTextColor = WarmCream,
+    leafImageRes = R.drawable.img_autumn_maple_leaf,
+    icWallet = R.drawable.ic_autumn_wallet,
+    icScanner = R.drawable.ic_autumn_scanner,
+    icTransfer = R.drawable.ic_autumn_transfer,
+    icCard = R.drawable.ic_autumn_card,
+    icDeposit = R.drawable.ic_autumn_deposit,
+    icLoan = R.drawable.ic_autumn_loan,
+    icPayment = R.drawable.ic_autumn_payment,
+    icTopup = R.drawable.ic_autumn_topup,
+    icQuickCash = R.drawable.ic_autumn_quickcash,
+    icSchool = R.drawable.ic_autumn_school,
+    icDepartment = R.drawable.ic_autumn_department,
+    icExchange = R.drawable.ic_autumn_exchange
 )
 
-// 3. New Forest Theme
-val ForestTheme = CardTheme(
-    name = "Forest",
-    backgroundRes = R.drawable.banner1,
-    buttonColor = Color(0xFF1B5E20),
-    buttonTextColor = Color.White,
-    iconBorderColor = Color(0xFFC8E6C9),
-    iconCornerRadius = 24.dp, // Extra rounded
-    themeImages = listOf(
-        R.drawable.img_theme4,
-        R.drawable.img_theme3,
-        R.drawable.img_theme2,
-        R.drawable.img_theme1,
-    ),
-    sheetContainerColor = Color(0xFF002111),
-    sheetContentColor = Color(0xFF00391C)
-)
-
-// 4. Cherry Blossom Theme
 val CherryBlossomTheme = CardTheme(
     name = "Cherry Blossom",
-    backgroundRes = R.drawable.banner2,
+    backgroundRes = R.drawable.img_blossom_background,
     buttonColor = CherryVibrantPink,
     buttonTextColor = Color.White,
     iconBorderColor = CherryBlossomPink,
     iconCornerRadius = 18.dp,
     themeImages = listOf(
-        R.drawable.img_theme5,
-        R.drawable.img_theme1,
-        R.drawable.img_theme2,
-        R.drawable.img_theme3,
+        R.drawable.img_def_theme5,
+        R.drawable.img_def_theme1,
+        R.drawable.img_def_theme2,
+        R.drawable.img_def_theme3,
     ),
     sheetContainerColor = CherryDeepPink,
-    sheetContentColor = CherryVibrantPink
+    sheetContentColor = CherryVibrantPink,
+    primaryTextColor = CherryDeepPink,
+    cardBackgroundColor = CherryVibrantPink,
+    secondaryTextColor = CherryBlushPink,
+    leafImageRes = R.drawable.img_blossom_sakura_leaf,
+    icWallet = R.drawable.ic_blossom_wallet,
+    icScanner = R.drawable.ic_blossom_scanner,
+    icTransfer = R.drawable.ic_blossom_transfer,
+    icCard = R.drawable.ic_bollom_card,
+    icDeposit = R.drawable.ic_blossom_deposit,
+    icLoan = R.drawable.ic_blossom_loan,
+    icPayment = R.drawable.ic_blossom_payment,
+    icTopup = R.drawable.ic_blossom_topup,
+    icQuickCash = R.drawable.ic_blossom_quickcash,
+    icSchool = R.drawable.ic_blossom_school,
+    icDepartment = R.drawable.ic_bollom_location,
+    icExchange = R.drawable.ic_blossom_exhange
 )
 
-val AllThemes = listOf(DarkBlueTheme, AutumnTheme, ForestTheme, CherryBlossomTheme)
+val AllThemes = listOf(AutumnTheme, CherryBlossomTheme)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -167,8 +177,8 @@ fun ScreenshotThemeCard(
                 .height(140.dp)
                 .clip(RoundedCornerShape(18.dp))
         ) {
-            Image(
-                painter = painterResource(id = currentTheme.backgroundRes),
+            AsyncImage(
+                model = currentTheme.backgroundRes,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.matchParentSize()
@@ -201,8 +211,8 @@ fun ScreenshotThemeCard(
                                 .width(52.dp)
                                 .fillMaxHeight()
                         ) {
-                            Image(
-                                painter = painterResource(id = imageRes),
+                            AsyncImage(
+                                model = imageRes,
                                 contentDescription = "Icon ${index + 1}",
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
@@ -222,7 +232,6 @@ fun ScreenshotThemeCard(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                // Customize Button
                 Box(
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -288,8 +297,8 @@ fun ScreenshotThemeCard(
                                                     shape = RoundedCornerShape(12.dp)
                                                 )
                                         ) {
-                                            Image(
-                                                painter = painterResource(themeOption.backgroundRes),
+                                            AsyncImage(
+                                                model = themeOption.backgroundRes,
                                                 contentDescription = themeOption.name,
                                                 contentScale = ContentScale.Crop,
                                                 modifier = Modifier.fillMaxSize()
@@ -315,7 +324,7 @@ fun ScreenshotThemeCard(
 
 @Composable
 fun ThemeSwitchingScreen() {
-    var currentTheme by remember { mutableStateOf(DarkBlueTheme) }
+    var currentTheme by remember { mutableStateOf(AutumnTheme) }
 
     Column(
         modifier = Modifier

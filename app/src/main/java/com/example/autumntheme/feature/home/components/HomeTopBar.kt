@@ -14,6 +14,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.autumntheme.feature.card.AutumnTheme
+import com.example.autumntheme.feature.card.CardTheme
 import com.example.autumntheme.feature.home.DarkBlue
 import com.example.autumntheme.ui.theme.DeepBrown
 import dev.chrisbanes.haze.HazeStyle
@@ -21,7 +23,12 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 
 @Composable
-fun HomeTopBar(badgeCount: Int, modifier: Modifier = Modifier, ) {
+fun HomeTopBar(
+    badgeCount: Int,
+    modifier: Modifier = Modifier,
+    theme: CardTheme = AutumnTheme,
+    onQRClick: () -> Unit = {}
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -33,7 +40,7 @@ fun HomeTopBar(badgeCount: Int, modifier: Modifier = Modifier, ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
                 modifier = Modifier.width(200.dp),
-                painter = painterResource(R.drawable.ac),
+                painter = painterResource(R.drawable.img_def_ac),
                 contentDescription = "Acleda Logo"
             )
         }
@@ -51,20 +58,24 @@ fun HomeTopBar(badgeCount: Int, modifier: Modifier = Modifier, ) {
                 ) {
                     Icon(
                         modifier = Modifier.size(30.dp),
-                        painter = painterResource(id = R.drawable.ic_notification),
+                        painter = painterResource(id = R.drawable.ic_def_notification),
                         contentDescription = "Notifications",
-                        tint = DeepBrown
+                        tint = theme.primaryTextColor
                     )
                 }
             }
             Spacer(modifier = Modifier.width(8.dp))
-            Image(
-                painter = painterResource(R.drawable.unnamed),
-                contentDescription = "bakong khqr",
-                modifier = Modifier
-                    .size(35.dp)
-                    .clip(RoundedCornerShape(6.dp))
-            )
+            IconButton(
+                onClick = onQRClick
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.img_def_logo_unnamed),
+                    contentDescription = "bakong khqr",
+                    modifier = Modifier
+                        .size(35.dp)
+                        .clip(RoundedCornerShape(6.dp))
+                )
+            }
         }
     }
 }

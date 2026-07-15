@@ -2,6 +2,7 @@ package com.example.autumntheme.feature.home.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import com.example.autumntheme.R
 
 import androidx.compose.foundation.layout.*
@@ -22,6 +23,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.autumntheme.feature.card.AutumnTheme
+import com.example.autumntheme.feature.card.CardTheme
 import com.example.autumntheme.feature.home.CardColor
 import com.example.autumntheme.ui.theme.AmberGold
 import com.example.autumntheme.ui.theme.BorderTan
@@ -37,68 +40,79 @@ import dev.chrisbanes.haze.hazeEffect
 @Composable
 fun ServiceGrid(
     hazeState: HazeState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    theme: CardTheme = AutumnTheme,
+    onScanQRClick: () -> Unit = {}
 ) {
     Column(modifier = modifier) {
         Row(modifier = Modifier.fillMaxWidth()) {
             ServiceItemLarge(
-                iconRes = R.drawable.ic_payment1,
+                iconRes = theme.icPayment,
                 label = "Payments",
                 hazeState = hazeState,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                theme = theme
             )
             Spacer(modifier = Modifier.width(12.dp))
             ServiceItemLarge(
-                iconRes = R.drawable.ic_topup1,
+                iconRes = theme.icTopup,
                 label = "Mobile Top-up",
                 hazeState = hazeState,
-                modifier = Modifier.weight(1.2f)
+                modifier = Modifier.weight(1.2f),
+                theme = theme
             )
         }
         Spacer(modifier = Modifier.height(12.dp))
         Row(modifier = Modifier.fillMaxWidth()) {
             ServiceItemSmall(
-                iconRes = R.drawable.ic_card1,
+                iconRes = theme.icCard,
                 label = "Cards",
                 hazeState = hazeState,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                theme = theme
             )
             Spacer(modifier = Modifier.width(12.dp))
             ServiceItemSmall(
-                iconRes = R.drawable.ic_scanner1,
+                iconRes = theme.icScanner,
                 label = "Scan QR",
                 hazeState = hazeState,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                theme = theme,
+                onClick = onScanQRClick
             )
             Spacer(modifier = Modifier.width(12.dp))
             ServiceItemSmall(
-                iconRes = R.drawable.ic_transfer1,
+                iconRes = theme.icTransfer,
                 label = "Transfers",
                 hazeState = hazeState,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                theme = theme
             )
         }
         Spacer(modifier = Modifier.height(12.dp))
         Row(modifier = Modifier.fillMaxWidth()) {
             ServiceItemSmall(
-                iconRes = R.drawable.ic_deposit1,
+                iconRes = theme.icDeposit,
                 label = "Deposits",
                 hazeState = hazeState,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                theme = theme
             )
             Spacer(modifier = Modifier.width(12.dp))
             ServiceItemSmall(
-                iconRes = R.drawable.ic_loan1,
+                iconRes = theme.icLoan,
                 label = "Loans",
                 hazeState = hazeState,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                theme = theme
             )
             Spacer(modifier = Modifier.width(12.dp))
             ServiceItemSmall(
-                iconRes = R.drawable.ic_quickcash1,
+                iconRes = theme.icQuickCash,
                 label = "Quick Cash",
                 hazeState = hazeState,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                theme = theme
             )
         }
     }
@@ -109,7 +123,8 @@ fun ServiceItemLarge(
     iconRes: Int,
     label: String,
     hazeState: HazeState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    theme: CardTheme
 ) {
     Box(
         modifier = modifier
@@ -118,17 +133,11 @@ fun ServiceItemLarge(
             .hazeEffect(
                 state = hazeState,
                 style = HazeStyle(
-                    backgroundColor = DeepBrown,
-                    tint = HazeTint(DeepBrown.copy(alpha = 0.5f)),
-                    blurRadius = 30.dp,
-                    noiseFactor = 0.05f
+                    backgroundColor = theme.cardBackgroundColor,
+                    tint = HazeTint(theme.cardBackgroundColor.copy(alpha = 0.5f)),
+                    blurRadius = 20.dp,
                 )
             )
-//            .border(
-//                width = 1.dp,
-//                color = PumpkinOrange.copy(alpha = 0.6f),
-//                shape = RoundedCornerShape(16.dp)
-//            )
     ) {
         Row(
             modifier = Modifier
@@ -144,7 +153,7 @@ fun ServiceItemLarge(
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = label,
-                color = WarmCream,
+                color = theme.secondaryTextColor,
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp
             )
@@ -156,7 +165,9 @@ fun ServiceItemSmall(
     iconRes: Int,
     label: String,
     hazeState: HazeState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    theme: CardTheme,
+    onClick: () -> Unit = {}
 ) {
     Box(
         modifier = modifier
@@ -165,17 +176,12 @@ fun ServiceItemSmall(
             .hazeEffect(
                 state = hazeState,
                 style = HazeStyle(
-                    backgroundColor = DeepBrown,
-                    tint = HazeTint(DeepBrown.copy(alpha = 0.5f)),
-                    blurRadius = 30.dp,
-                    noiseFactor = 0.05f
+                    backgroundColor = theme.cardBackgroundColor,
+                    tint = HazeTint(theme.cardBackgroundColor.copy(alpha = 0.5f)),
+                    blurRadius = 20.dp,
                 )
             )
-//            .border(
-//                width = 2.dp,
-//                color = BurntOrange.copy(alpha = 0.6f),
-//                shape = RoundedCornerShape(16.dp)
-//            )
+            .clickable { onClick() }
     ) {
         Column(
             modifier = Modifier
@@ -191,7 +197,7 @@ fun ServiceItemSmall(
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = label,
-                color = WarmCream,
+                color = theme.secondaryTextColor,
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp
             )

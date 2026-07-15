@@ -25,6 +25,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.autumntheme.feature.card.AutumnTheme
+import com.example.autumntheme.feature.card.CardTheme
 import com.example.autumntheme.ui.theme.AmberGold
 import com.example.autumntheme.ui.theme.BurntOrange
 import com.example.autumntheme.ui.theme.DeepBrown
@@ -36,7 +38,7 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 
 @Composable
-fun BalanceCard(modifier: Modifier = Modifier, hazeState: HazeState) {
+fun BalanceCard(modifier: Modifier = Modifier, hazeState: HazeState, theme: CardTheme = AutumnTheme) {
     val animatedProgress = remember { Animatable(0f) }
 
     LaunchedEffect(Unit) {
@@ -49,23 +51,20 @@ fun BalanceCard(modifier: Modifier = Modifier, hazeState: HazeState) {
         )
     }
 
-    // Outer Box allows us to place overlapping items (like the leaves on the corners)
     Box(
         modifier = modifier.fillMaxWidth()
     ) {
-        // 1. The Main Card
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 12.dp) // Adds safe spacing so overlapping leaves aren't clipped by outer screens
+                .padding(top = 12.dp)
                 .clip(RoundedCornerShape(20.dp))
                 .hazeEffect(
                     state = hazeState,
                     style = HazeStyle(
-                        backgroundColor = DeepBrown,
-                        tint = HazeTint(DeepBrown.copy(alpha = 0.5f)),
-                        blurRadius = 30.dp,
-                        noiseFactor = 0.05f
+                        backgroundColor = theme.cardBackgroundColor,
+                        tint = HazeTint(theme.cardBackgroundColor.copy(alpha = 0.5f)),
+                        blurRadius = 20.dp,
                     )
                 )
         ) {
@@ -87,7 +86,7 @@ fun BalanceCard(modifier: Modifier = Modifier, hazeState: HazeState) {
                         val progress = animatedProgress.value
 
                         drawArc(
-                            color = BurntOrange.copy(alpha = 0.1f),
+                            color = theme.buttonColor.copy(alpha = 0.1f),
                             startAngle = 0f,
                             sweepAngle = 360f * progress,
                             useCenter = false,
@@ -95,7 +94,7 @@ fun BalanceCard(modifier: Modifier = Modifier, hazeState: HazeState) {
                         )
 
                         drawArc(
-                            color = PumpkinOrange,
+                            color = theme.buttonColor,
                             startAngle = -150f + (50f * progress),
                             sweepAngle = 260f * progress,
                             useCenter = false,
@@ -103,7 +102,7 @@ fun BalanceCard(modifier: Modifier = Modifier, hazeState: HazeState) {
                         )
 
                         drawArc(
-                            color = AmberGold,
+                            color = theme.iconBorderColor,
                             startAngle = 120f + (50f * progress),
                             sweepAngle = 20f * progress,
                             useCenter = false,
@@ -112,12 +111,12 @@ fun BalanceCard(modifier: Modifier = Modifier, hazeState: HazeState) {
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         DashboardIcon(
-                            iconRes = R.drawable.ic_wallet1,
+                            iconRes = theme.icWallet,
                             modifier = Modifier.size(45.dp)
                         )
                         Text(
                             text = "Accounts",
-                            color = WarmCream,
+                            color = theme.secondaryTextColor,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium
                         )
@@ -135,45 +134,45 @@ fun BalanceCard(modifier: Modifier = Modifier, hazeState: HazeState) {
                         Text(
                             text = "Total Balances",
                             fontWeight = FontWeight.Normal,
-                            color = Color.White.copy(alpha = 0.8f),
+                            color = theme.secondaryTextColor.copy(alpha = 0.8f),
                             fontSize = 16.sp
                         )
                         Spacer(Modifier.width(5.dp))
                         DashboardIcon(
-                            iconRes = R.drawable.ic_eye,
+                            iconRes = R.drawable.ic_def_eye,
                             modifier = Modifier.size(24.dp)
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-                    BalanceRow(currency = "៛", amount = "២៣២,២៣៣", color = PumpkinOrange)
-                    BalanceRow(currency = "$", amount = "29388", color = AmberGold)
+                    BalanceRow(currency = "៛", amount = "២៣២,២៣៣", color = theme.buttonColor, textColor = theme.secondaryTextColor)
+                    BalanceRow(currency = "$", amount = "29388", color = theme.iconBorderColor, textColor = theme.secondaryTextColor)
                 }
             }
         }
         Image(
-            painter = painterResource(id = R.drawable.img_mapleleaf),
-            contentDescription = "Left Maple Leaf",
+            painter = painterResource(id = theme.leafImageRes),
+            contentDescription = "Left Leaf",
             modifier = Modifier
-                .size(60.dp)
+                .size(70.dp)
                 .align(Alignment.TopStart)
                 .offset(x = (-10).dp, y = (-10).dp)
                 .rotate(50f)
         )
 
         Image(
-            painter = painterResource(id = R.drawable.img_mapleleaf),
-            contentDescription = "Right Maple Leaf",
+            painter = painterResource(id = theme.leafImageRes),
+            contentDescription = "Right Leaf",
             modifier = Modifier
-                .size(40.dp)
+                .size(50.dp)
                 .align(Alignment.TopEnd)
                 .offset(x = (10).dp, y = (-2).dp)
-                .rotate(-45f) // Rotates clockwise
+                .rotate(-45f)
         )
     }
 }
 
 @Composable
-fun BalanceRow(currency: String, amount: String, color: Color) {
+fun BalanceRow(currency: String, amount: String, color: Color, textColor: Color) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End,
@@ -181,7 +180,7 @@ fun BalanceRow(currency: String, amount: String, color: Color) {
     ) {
         Text(
             text = amount,
-            color = WarmCream,
+            color = textColor,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(end = 8.dp)

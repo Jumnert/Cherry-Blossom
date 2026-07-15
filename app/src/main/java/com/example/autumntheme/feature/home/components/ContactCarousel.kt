@@ -31,7 +31,7 @@ fun ContactCarousel(
     onContactSelect: (ContactItem) -> Unit = {}
 ) {
     val contactsList = listOf(
-        ContactItem("Sok Dara", R.drawable.designer)
+        ContactItem("Sok Dara", R.drawable.img_def_designer)
     )
     LazyRow(
         modifier = modifier,

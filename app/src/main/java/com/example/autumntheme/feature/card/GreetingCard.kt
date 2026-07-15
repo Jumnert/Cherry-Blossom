@@ -19,10 +19,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.autumntheme.ui.theme.DeepBrown
 
 @Composable
-fun GreetingCard(modifier: Modifier = Modifier) {
+fun GreetingCard(modifier: Modifier = Modifier, theme: CardTheme = AutumnTheme) {
     Row(
         modifier = modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -31,9 +32,9 @@ fun GreetingCard(modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
+        AsyncImage(
             modifier = Modifier.clip(CircleShape),
-            painter = painterResource(R.drawable.img_pfp),
+            model = R.drawable.img_def_profile,
             contentDescription = "User profile",
         )
         Column(
@@ -41,14 +42,14 @@ fun GreetingCard(modifier: Modifier = Modifier) {
         ) {
             Text(
                 fontSize = 18.sp,
-                color = DeepBrown,
+                color = theme.primaryTextColor,
                 text = "Hello \uD83D\uDC4B, Theachumnith",
                 fontWeight = FontWeight.Medium,
             )
             Text(
                 fontSize = 16.sp,
                 text = "Profile >",
-                color = DeepBrown,
+                color = theme.primaryTextColor,
             )
         }
     }

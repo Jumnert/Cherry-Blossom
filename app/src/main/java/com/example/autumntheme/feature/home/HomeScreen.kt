@@ -8,12 +8,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
@@ -22,16 +24,22 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import coil.compose.AsyncImage
+import com.example.autumntheme.feature.card.AutumnTheme
 import com.example.autumntheme.feature.card.CarouselItem
-import com.example.autumntheme.feature.card.DarkBlueTheme
 import com.example.autumntheme.feature.card.GreetingCard
 import com.example.autumntheme.feature.card.PropertyCarousel
 import com.example.autumntheme.feature.card.ScreenshotThemeCard
 import com.example.autumntheme.feature.card.offercardcarousel
 import com.example.autumntheme.feature.home.components.*
+import com.example.autumntheme.feature.qr.QRScannerScreen
+import com.example.autumntheme.feature.receipt.ReceiptScreen
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
@@ -48,47 +56,61 @@ val CardColor1 = Color(0xFF334155)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen() {
-    var currentTheme by remember { mutableStateOf(DarkBlueTheme) }
+    var currentTheme by remember { mutableStateOf(AutumnTheme) }
+    var showScanner by remember { mutableStateOf(false) }
+    var showReceipt by remember { mutableStateOf(false) }
+
     val sampleCarouselItemse = remember {
         listOf(
             CarouselItem(
                 title = "Student in rural area studying at a young age was captured by the moeys team",
-                imagePlaceholder = R.drawable.img_studentstudy,
-                profileImage = R.drawable.img_moeys
+                imagePlaceholder = R.drawable.img_def_student_study,
+                profileImage = R.drawable.img_def_moeys
 
             ),
             CarouselItem(
                 title = "Second sample property card for checking horizontal swipe behavior",
-                imagePlaceholder = R.drawable.img_potiential,
-                profileImage = R.drawable.img_potential
+                imagePlaceholder = R.drawable.img_def_potential_1,
+                profileImage = R.drawable.img_def_potential_2
             ),
             CarouselItem(
                 title = "Third sample property card to fully test out the dot indicators",
-                imagePlaceholder = R.drawable.img_forte,
-                profileImage = R.drawable.forte
-            ),
-            CarouselItem(
-                title = "Third sample property card to fully test out the dot indicators",
-                imagePlaceholder = R.drawable.img_forte,
-                profileImage = R.drawable.forte
-            ),
-            CarouselItem(
-                title = "Third sample property card to fully test out the dot indicators",
-                imagePlaceholder = R.drawable.img_forte,
-                profileImage = R.drawable.forte
+                imagePlaceholder = R.drawable.img_def_forte_1,
+                profileImage = R.drawable.img_def_forte_2
             )
         )
     }
-    val sampleCarouselItems = remember {
+
+    val tourismItems = remember {
         listOf(
-            CarouselSection("Payments", R.drawable.ic_school),
-            CarouselSection("Tuan Chet", R.drawable.ic_department),
-            CarouselSection("Cards", R.drawable.ic_exchange1),
-            CarouselSection("Scan QR", R.drawable.ic_scanner1),
-            CarouselSection("Transfers", R.drawable.ic_transfer1),
-            CarouselSection("Deposits", R.drawable.ic_deposit1),
-            CarouselSection("Loans", R.drawable.ic_loan1),
-            CarouselSection("Quick Cash", R.drawable.ic_card1)
+            CarouselItem(
+                title = "Eco-tourism of the Preah Luang Do...",
+                imagePlaceholder = R.drawable.img_def_banner1
+            ),
+            CarouselItem(
+                title = "Explore the beautiful beaches of Sihanoukville",
+                imagePlaceholder = R.drawable.img_def_banner2
+            ),
+            CarouselItem(
+                title = "Visit the majestic Angkor Wat temple",
+                imagePlaceholder = R.drawable.img_def_banner3
+            ),
+            CarouselItem(
+                title = "Discover the wildlife in Mondulkiri",
+                imagePlaceholder = R.drawable.img_def_banner4
+            )
+        )
+    }
+    val sampleCarouselItems = remember(currentTheme) {
+        listOf(
+            CarouselSection("Payments", currentTheme.icPayment),
+            CarouselSection("Tuan Chet", currentTheme.icDepartment),
+            CarouselSection("Cards", currentTheme.icCard),
+            CarouselSection("Scan QR", currentTheme.icScanner),
+            CarouselSection("Transfers", currentTheme.icTransfer),
+            CarouselSection("Deposits", currentTheme.icDeposit),
+            CarouselSection("Loans", currentTheme.icLoan),
+            CarouselSection("Quick Cash", currentTheme.icQuickCash)
         )
     }
 
@@ -118,17 +140,8 @@ fun HomeScreen() {
     ) {
         val hazeState = remember { HazeState() }
 
-
-//
-//        VideoBackground(
-//            videoResId = R.raw.bg_autumn,
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .hazeSource(state = hazeState)
-//        )
-//
-        Image(
-            painter = painterResource(id = R.drawable.img_background),
+        AsyncImage(
+            model = currentTheme.backgroundRes,
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
@@ -148,7 +161,9 @@ fun HomeScreen() {
                         .height(120.dp)
                         .fillMaxWidth()
                         .zIndex(10f)
-                        .clip(OutwardRoundedBottomShape(cornerRadius = 24.dp))
+                        .clip(OutwardRoundedBottomShape(cornerRadius = 24.dp)),
+                    theme = currentTheme,
+                    onQRClick = { showReceipt = true }
                 )
             }
 
@@ -161,46 +176,62 @@ fun HomeScreen() {
                         .padding(horizontal = 16.dp)
                         .graphicsLayer {
                             alpha = greetingAlpha
-                        }
+                        },
+                    theme = currentTheme
                 )
             }
             item {
-                BalanceCard(modifier = Modifier.padding(horizontal = 16.dp), hazeState = hazeState,)
+                BalanceCard(modifier = Modifier.padding(horizontal = 16.dp), hazeState = hazeState, theme = currentTheme)
             }
 
             item {
                 Spacer(modifier = Modifier.height(16.dp))
-                ServiceGrid(hazeState = hazeState, modifier = Modifier.padding(horizontal = 16.dp))
+                ServiceGrid(
+                    hazeState = hazeState,
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    theme = currentTheme,
+                    onScanQRClick = { showScanner = true }
+                )
             }
-//            item {
-//                HorizontalDivider(thickness = 2.dp, modifier = Modifier
-//                    .padding(horizontal = 16.dp, vertical = 8.dp))
-//            }
             item {
                 Spacer(modifier = Modifier.height(16.dp))
-                SectionCarousel(sections = sampleCarouselItems, hazeState = hazeState,)
+                SectionCarousel(sections = sampleCarouselItems, hazeState = hazeState, theme = currentTheme)
             }
 
             item {
                 Spacer(modifier = Modifier.height(16.dp))
-                HeaderText(text = "Recommended", modifier = Modifier.padding(horizontal = 16.dp), )
+                HeaderText(text = "Recommended", modifier = Modifier.padding(horizontal = 16.dp), theme = currentTheme)
                 ImageCarousel()
             }
 
             item {
                 Spacer(modifier = Modifier.height(16.dp))
-                HeaderText(text = "Recommended Place", modifier = Modifier.padding(horizontal = 16.dp))
-                PropertyCarousel(items = sampleCarouselItemse)
+                PropertyCarousel(
+                    items = tourismItems,
+                    isTourism = true,
+                    headerTitle = "Cambodia Tourism",
+                    theme = currentTheme
+                )
             }
 
             item {
                 Spacer(modifier = Modifier.height(16.dp))
-                HeaderText(text = "Special Offer", modifier = Modifier.padding(horizontal = 16.dp))
-                offercardcarousel(hazeState = hazeState)
+                DoubleServiceGrid(hazeState = hazeState, theme = currentTheme)
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+                RecentTransactions(hazeState = hazeState, theme = currentTheme)
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+                HeaderText(text = "Special Offer", modifier = Modifier.padding(horizontal = 16.dp), theme = currentTheme)
+                offercardcarousel(hazeState = hazeState, theme = currentTheme)
             }
             item {
                 Spacer(modifier = Modifier.height(16.dp))
-                HeaderText(text = "Appearance", modifier = Modifier.padding(horizontal = 16.dp))
+                HeaderText(text = "Appearance", modifier = Modifier.padding(horizontal = 16.dp), theme = currentTheme)
             }
             item {
                 ScreenshotThemeCard(
@@ -211,11 +242,43 @@ fun HomeScreen() {
                 )
             }
         }
+
+        if (showScanner) {
+            QRScannerScreen(
+                theme = currentTheme,
+                onDismiss = { showScanner = false }
+            )
+        }
+
+        if (showReceipt) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                ReceiptScreen()
+                IconButton(
+                    onClick = { showReceipt = false },
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .padding(16.dp)
+                        .size(40.dp)
+                        .background(Color.Black.copy(alpha = 0.3f), androidx.compose.foundation.shape.CircleShape)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = Color.White
+                    )
+                }
+            }
+        }
     }
 }
 
 @Preview
 @Composable
 fun HomeScreenPreview() {
+    HomeScreen()
+}
+@Preview(name = "Foldable Screen", device = Devices.PIXEL_9_PRO_FOLD, showSystemUi = true)
+@Composable
+fun HomeScreenPreview1() {
     HomeScreen()
 }

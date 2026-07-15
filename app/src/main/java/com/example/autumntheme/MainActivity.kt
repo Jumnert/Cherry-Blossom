@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.autumntheme.feature.home.HomeScreen
+import com.example.autumntheme.feature.receipt.ReceiptScreen
 import com.example.autumntheme.ui.theme.Training15DaysTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,8 +18,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Training15DaysTheme {
-                   HomeScreen()
-//                UserListScreen()
+                HomeScreen()
             }
         }
     }

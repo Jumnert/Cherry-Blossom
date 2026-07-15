@@ -15,7 +15,6 @@ val Gold = Color(0xFFE5A50A)
 val LightBlue = Color(0xFFDCC6AC)
 val CardColor = Color(0xFFB89B82)
 
-///----------Autumn Color
 val BurntOrange = Color(0xFFC1770B)
 val PumpkinOrange = Color(0xFFD2691E)
 val AmberGold      = Color(0xFFE8A33D)
@@ -25,9 +24,8 @@ val BorderTan      = Color(0xFF4A3620)
 val CardBrown      = Color(0xFF241A10)
 val TextTanGold    = Color(0xFFC9A879)
 
-/* Chhery Blossom Color*/
-val CherryDeepPink = Color(0xFFE51A4C)      // The vibrant, deep pink on the far left
-val CherryVibrantPink = Color(0xFFF25270)   // The medium-bright pink
-val CherryBlossomPink = Color(0xFFFFA3A8)   // The classic soft cherry blossom pink
-val CherryBlushPink = Color(0xFFFFE5E7)     // The ultra-light pastel blush
+val CherryDeepPink = Color(0xFFE51A4C)
+val CherryVibrantPink = Color(0xFFF25270)
+val CherryBlossomPink = Color(0xFFFFA3A8)
+val CherryBlushPink = Color(0xFFFFE5E7)
 val CherrySoftBlue = Color(0xFFD7E2EE)

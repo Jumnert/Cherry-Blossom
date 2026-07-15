@@ -42,9 +42,6 @@ fun VideoBackground(
         }
     }
 
-    // Tracks whether we've already attached a surface, so re-attach events
-    // (recomposition, sticky header scroll, etc.) don't force ExoPlayer to
-    // redraw from scratch and cause a black flash.
     var currentSurface: Surface? = null
 
     DisposableEffect(lifecycleOwner) {
@@ -70,7 +67,6 @@ fun VideoBackground(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
-                // Fix #3: opaque surface avoids flickering to black during buffer swaps
                 isOpaque = true
 
                 surfaceTextureListener = object : TextureView.SurfaceTextureListener {
