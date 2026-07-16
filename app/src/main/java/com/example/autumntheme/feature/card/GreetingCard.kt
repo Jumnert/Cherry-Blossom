@@ -32,10 +32,10 @@ fun GreetingCard(modifier: Modifier = Modifier, theme: CardTheme = AutumnTheme) 
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AsyncImage(
-            modifier = Modifier.clip(CircleShape),
-            model = R.drawable.img_def_profile,
+        Image(
+            painter = painterResource(id = R.drawable.img_def_profile),
             contentDescription = "User profile",
+            modifier = Modifier.clip(CircleShape)
         )
         Column(
             verticalArrangement = Arrangement.spacedBy(2.dp)
@@ -43,7 +43,7 @@ fun GreetingCard(modifier: Modifier = Modifier, theme: CardTheme = AutumnTheme) 
             Text(
                 fontSize = 18.sp,
                 color = theme.primaryTextColor,
-                text = "Hello \uD83D\uDC4B, Theachumnith",
+                text = "Hi \uD83D\uDC4B, Theachumnith",
                 fontWeight = FontWeight.Medium,
             )
             Text(

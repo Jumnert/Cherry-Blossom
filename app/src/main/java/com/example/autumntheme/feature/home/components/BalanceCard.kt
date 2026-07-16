@@ -4,6 +4,8 @@ import com.example.autumntheme.R
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import com.example.autumntheme.ui.theme.glassEffect
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -13,7 +15,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,6 +31,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.autumntheme.feature.card.AutumnTheme
 import com.example.autumntheme.feature.card.CardTheme
 import com.example.autumntheme.ui.theme.AmberGold
@@ -32,23 +41,32 @@ import com.example.autumntheme.ui.theme.BurntOrange
 import com.example.autumntheme.ui.theme.DeepBrown
 import com.example.autumntheme.ui.theme.PumpkinOrange
 import com.example.autumntheme.ui.theme.WarmCream
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.hazeEffect
 
 @Composable
-fun BalanceCard(modifier: Modifier = Modifier, hazeState: HazeState, theme: CardTheme = AutumnTheme) {
-    val animatedProgress = remember { Animatable(0f) }
+fun BalanceCard(modifier: Modifier = Modifier, theme: CardTheme = AutumnTheme) {
+    var hasAnimated by rememberSaveable { mutableStateOf(false) }
+    val animatedProgress = remember { Animatable(if (hasAnimated) 1f else 0f) }
+    val context = LocalContext.current
+    val leafRequest = remember(theme.leafImageRes) {
+        ImageRequest.Builder(context)
+            .data(theme.leafImageRes)
+            .crossfade(true)
+            .allowHardware(true)
+            .build()
+    }
+    val leafPainter = rememberAsyncImagePainter(model = leafRequest)
 
     LaunchedEffect(Unit) {
-        animatedProgress.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(
-                durationMillis = 1200,
-                easing = FastOutSlowInEasing
+        if (!hasAnimated) {
+            animatedProgress.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(
+                    durationMillis = 1200,
+                    easing = FastOutSlowInEasing
+                )
             )
-        )
+            hasAnimated = true
+        }
     }
 
     Box(
@@ -58,15 +76,7 @@ fun BalanceCard(modifier: Modifier = Modifier, hazeState: HazeState, theme: Card
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 12.dp)
-                .clip(RoundedCornerShape(20.dp))
-                .hazeEffect(
-                    state = hazeState,
-                    style = HazeStyle(
-                        backgroundColor = theme.cardBackgroundColor,
-                        tint = HazeTint(theme.cardBackgroundColor.copy(alpha = 0.5f)),
-                        blurRadius = 20.dp,
-                    )
-                )
+                .glassEffect(shape = RoundedCornerShape(20.dp), alpha = 0.20f, tintColor = theme.cardBackgroundColor, accentColor = theme.buttonColor)
         ) {
             Row(
                 modifier = Modifier
@@ -150,7 +160,7 @@ fun BalanceCard(modifier: Modifier = Modifier, hazeState: HazeState, theme: Card
             }
         }
         Image(
-            painter = painterResource(id = theme.leafImageRes),
+            painter = leafPainter,
             contentDescription = "Left Leaf",
             modifier = Modifier
                 .size(70.dp)
@@ -160,7 +170,7 @@ fun BalanceCard(modifier: Modifier = Modifier, hazeState: HazeState, theme: Card
         )
 
         Image(
-            painter = painterResource(id = theme.leafImageRes),
+            painter = leafPainter,
             contentDescription = "Right Leaf",
             modifier = Modifier
                 .size(50.dp)

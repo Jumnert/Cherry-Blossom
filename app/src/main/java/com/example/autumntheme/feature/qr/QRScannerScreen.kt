@@ -2,13 +2,12 @@ package com.example.autumntheme.feature.qr
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Rect
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.camera.core.Camera
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.annotation.OptIn
+import androidx.camera.core.ExperimentalGetImage
+import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
@@ -38,20 +37,30 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.autumntheme.R
 import com.example.autumntheme.feature.card.CardTheme
-import kotlin.math.absoluteValue
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.barcode.ZoomSuggestionOptions
+import com.google.mlkit.vision.barcode.common.Barcode
+import com.google.mlkit.vision.common.InputImage
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalGetImage::class)
 @Composable
 fun QRScannerScreen(
     theme: CardTheme,
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
-    var camera by remember { mutableStateOf<Camera?>(null) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val coroutineScope = rememberCoroutineScope()
+
     var hasCameraPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
@@ -74,9 +83,172 @@ fun QRScannerScreen(
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+    val cameraController = remember {
+        LifecycleCameraController(context).apply {
+            setEnabledUseCases(
+                androidx.camera.view.CameraController.IMAGE_ANALYSIS
+            )
+        }
+    }
+
+    val options = remember(cameraController) {
+        BarcodeScannerOptions.Builder()
+            .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
+            .build()
+    }
+
+    val scanner = remember(options) { BarcodeScanning.getClient(options) }
+    var isScanned by remember { mutableStateOf(false) }
+
+    // Bounding box state for the target scanning UI
+    var qrBoundingBox by remember { mutableStateOf<Rect?>(null) }
+    var rawImageDimensions by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+    var imageRotation by remember { mutableStateOf(0) }
+
+    var minZoomRatio by remember { mutableStateOf(1f) }
+
+    LaunchedEffect(cameraController, scanner) {
+        cameraController.bindToLifecycle(lifecycleOwner)
+        
+        coroutineScope.launch {
+            while (cameraController.zoomState.value == null) {
+                delay(50)
+            }
+            val mz = cameraController.zoomState.value?.minZoomRatio ?: 1f
+            if (mz < 1f) {
+                minZoomRatio = mz
+                cameraController.setZoomRatio(mz)
+            }
+        }
+
+        cameraController.setImageAnalysisAnalyzer(
+            ContextCompat.getMainExecutor(context)
+        ) { imageProxy ->
+            val mediaImage = imageProxy.image
+            if (mediaImage != null) {
+                val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+                scanner.process(image)
+                    .addOnSuccessListener { barcodes ->
+                        val barcode = barcodes.firstOrNull()
+                        if (barcode != null) {
+                            // Track raw bounding box and rotation parameters
+                            qrBoundingBox = barcode.boundingBox
+                            rawImageDimensions = Pair(imageProxy.width, imageProxy.height)
+                            imageRotation = imageProxy.imageInfo.rotationDegrees
+
+                            val qrCode = barcode.rawValue
+                            if (qrCode != null && !isScanned) {
+                                isScanned = true
+                                // Hold screen momentarily so user sees visual overlay lock-on
+                                coroutineScope.launch {
+                                    delay(1500)
+                                    onDismiss()
+                                }
+                            }
+                        } else {
+                            qrBoundingBox = null
+                        }
+                    }
+                    .addOnCompleteListener {
+                        imageProxy.close()
+                    }
+            } else {
+                imageProxy.close()
+            }
+        }
+    }
+
+    val defaultScale = if (minZoomRatio < 1f) 1f / minZoomRatio else 1.0f
+    var targetScale by remember { mutableStateOf(1f) }
+    var targetTransX by remember { mutableStateOf(0f) }
+    var targetTransY by remember { mutableStateOf(0f) }
+
+    LaunchedEffect(defaultScale) {
+        targetScale = defaultScale
+    }
+
+    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+        val screenWidth = constraints.maxWidth.toFloat()
+        val screenHeight = constraints.maxHeight.toFloat()
+
+        LaunchedEffect(qrBoundingBox, rawImageDimensions, imageRotation, defaultScale) {
+            if (qrBoundingBox != null && rawImageDimensions != null) {
+                val imgW = rawImageDimensions!!.first.toFloat()
+                val imgH = rawImageDimensions!!.second.toFloat()
+
+                val scaleX: Float
+                val scaleY: Float
+                if (imageRotation == 90 || imageRotation == 270) {
+                    scaleX = screenWidth / imgH
+                    scaleY = screenHeight / imgW
+                } else {
+                    scaleX = screenWidth / imgW
+                    scaleY = screenHeight / imgH
+                }
+
+                val qrCenterX: Float
+                val qrCenterY: Float
+                when (imageRotation) {
+                    90 -> {
+                        qrCenterX = qrBoundingBox!!.centerY().toFloat() * scaleX
+                        qrCenterY = (imgW - qrBoundingBox!!.centerX().toFloat()) * scaleY
+                    }
+                    270 -> {
+                        qrCenterX = (imgH - qrBoundingBox!!.centerY().toFloat()) * scaleX
+                        qrCenterY = qrBoundingBox!!.centerX().toFloat() * scaleY
+                    }
+                    180 -> {
+                        qrCenterX = (imgW - qrBoundingBox!!.centerX().toFloat()) * scaleX
+                        qrCenterY = (imgH - qrBoundingBox!!.centerY().toFloat()) * scaleY
+                    }
+                    else -> {
+                        qrCenterX = qrBoundingBox!!.centerX().toFloat() * scaleX
+                        qrCenterY = qrBoundingBox!!.centerY().toFloat() * scaleY
+                    }
+                }
+
+                val qrWidth = qrBoundingBox!!.width().toFloat() * scaleX
+                val qrHeight = qrBoundingBox!!.height().toFloat() * scaleY
+                val maxQrDim = maxOf(qrWidth, qrHeight)
+
+                // We want the QR code to take up roughly 40% of the smallest screen dimension
+                val minScreenDim = minOf(screenWidth, screenHeight)
+                val desiredScale = if (maxQrDim > 0) {
+                    (minScreenDim * 0.4f) / maxQrDim
+                } else {
+                    defaultScale * 1.5f
+                }
+                
+                targetScale = desiredScale.coerceIn(defaultScale * 1.2f, defaultScale * 4f)
+                targetTransX = (screenWidth / 2f - qrCenterX) * targetScale
+                targetTransY = (screenHeight / 2f - qrCenterY) * targetScale
+            } else {
+                targetScale = defaultScale
+                targetTransX = 0f
+                targetTransY = 0f
+            }
+        }
+
+        val animScale by animateFloatAsState(targetScale, animationSpec = tween(500, easing = FastOutSlowInEasing), label = "animScale")
+        val animTransX by animateFloatAsState(targetTransX, animationSpec = tween(500, easing = FastOutSlowInEasing), label = "animTransX")
+        val animTransY by animateFloatAsState(targetTransY, animationSpec = tween(500, easing = FastOutSlowInEasing), label = "animTransY")
+
         if (hasCameraPermission) {
-            CameraPreview(onCameraReady = { camera = it })
+            AndroidView(
+                factory = { ctx ->
+                    PreviewView(ctx).apply {
+                        controller = cameraController
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer {
+                        scaleX = animScale
+                        scaleY = animScale
+                        translationX = animTransX
+                        translationY = animTransY
+                    }
+            )
         } else {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -90,7 +262,17 @@ fun QRScannerScreen(
             }
         }
 
-        ScannerOverlay(theme = theme)
+        ScannerOverlay(
+            theme = theme,
+            qrBox = qrBoundingBox,
+            imageSize = rawImageDimensions,
+            rotation = imageRotation,
+            animScale = animScale,
+            animTransX = animTransX,
+            animTransY = animTransY,
+            screenWidth = screenWidth,
+            screenHeight = screenHeight
+        )
 
         IconButton(
             onClick = onDismiss,
@@ -107,45 +289,24 @@ fun QRScannerScreen(
             )
         }
 
-        BottomScannerUI(camera = camera, theme = theme)
+        BottomScannerUI(cameraController = cameraController, theme = theme)
     }
 }
 
 @Composable
-fun CameraPreview(onCameraReady: (Camera) -> Unit) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-
-    AndroidView(factory = { ctx ->
-        val previewView = PreviewView(ctx)
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(ctx)
-
-        cameraProviderFuture.addListener({
-            val cameraProvider = cameraProviderFuture.get()
-
-            cameraProvider.unbindAll()
-
-            val preview = Preview.Builder().build().also {
-                it.setSurfaceProvider(previewView.surfaceProvider)
-            }
-            val imageAnalysis = ImageAnalysis.Builder().build()
-
-            val camera = cameraProvider.bindToLifecycle(
-                lifecycleOwner,
-                CameraSelector.DEFAULT_BACK_CAMERA,
-                preview,
-                imageAnalysis
-            )
-
-            onCameraReady(camera)
-        }, ContextCompat.getMainExecutor(ctx))
-
-        previewView
-    }, modifier = Modifier.fillMaxSize())
-}
-
-@Composable
-fun ScannerOverlay(theme: CardTheme) {
+fun ScannerOverlay(
+    theme: CardTheme,
+    qrBox: Rect?,
+    imageSize: Pair<Int, Int>?,
+    rotation: Int,
+    animScale: Float,
+    animTransX: Float,
+    animTransY: Float,
+    screenWidth: Float,
+    screenHeight: Float
+) {
     val infiniteTransition = rememberInfiniteTransition(label = "scannerAnimation")
+    val density = LocalDensity.current
 
     val laserPositionProgress by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -170,88 +331,175 @@ fun ScannerOverlay(theme: CardTheme) {
     val laserColor = theme.buttonColor
     val cornerColor = if (theme.iconBorderColor != Color.Transparent) theme.iconBorderColor else theme.buttonColor
 
-    Canvas(
-        modifier = Modifier
-            .fillMaxSize()
-            .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
-    ) {
-        val width = size.width
-        val height = size.height
+    // Determine target box positions based on detected QR coordinates or fallback centered box
+    var targetLeft = 0f
+    var targetTop = 0f
+    var targetRight = 0f
+    var targetBottom = 0f
+    var hasTarget = false
 
-        val baseBoxSize = 260.dp.toPx()
-        val boxSize = baseBoxSize * cornerPulse
-        val cornerRadius = 32.dp.toPx()
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        val screenWidth = constraints.maxWidth.toFloat()
+        val screenHeight = constraints.maxHeight.toFloat()
 
-        val left = (width - boxSize) / 2
-        val top = (height - boxSize) / 3f
-        val right = left + boxSize
-        val bottom = top + boxSize
+        if (qrBox != null && imageSize != null) {
+            val imgW = imageSize.first.toFloat()
+            val imgH = imageSize.second.toFloat()
 
-        drawRect(
-            color = Color.Black.copy(alpha = 0.6f),
-            size = size
-        )
+            val scaleX: Float
+            val scaleY: Float
+            if (rotation == 90 || rotation == 270) {
+                scaleX = screenWidth / imgH
+                scaleY = screenHeight / imgW
+            } else {
+                scaleX = screenWidth / imgW
+                scaleY = screenHeight / imgH
+            }
 
-        drawRoundRect(
-            color = Color.Transparent,
-            topLeft = Offset(left, top),
-            size = Size(boxSize, boxSize),
-            cornerRadius = CornerRadius(cornerRadius),
-            blendMode = BlendMode.Clear
-        )
+            var rawLeft = 0f
+            var rawTop = 0f
+            var rawRight = 0f
+            var rawBottom = 0f
 
-        val lineLength = 40.dp.toPx()
-        val strokeWidth = 6.dp.toPx()
+            when (rotation) {
+                90 -> {
+                    rawLeft = qrBox.top * scaleX
+                    rawTop = (imgW - qrBox.right) * scaleY
+                    rawRight = qrBox.bottom * scaleX
+                    rawBottom = (imgW - qrBox.left) * scaleY
+                }
+                270 -> {
+                    rawLeft = (imgH - qrBox.bottom) * scaleX
+                    rawTop = qrBox.left * scaleY
+                    rawRight = (imgH - qrBox.top) * scaleX
+                    rawBottom = qrBox.right * scaleY
+                }
+                180 -> {
+                    rawLeft = (imgW - qrBox.right) * scaleX
+                    rawTop = (imgH - qrBox.bottom) * scaleY
+                    rawRight = (imgW - qrBox.left) * scaleX
+                    rawBottom = (imgH - qrBox.top) * scaleY
+                }
+                else -> {
+                    rawLeft = qrBox.left * scaleX
+                    rawTop = qrBox.top * scaleY
+                    rawRight = qrBox.right * scaleX
+                    rawBottom = qrBox.bottom * scaleY
+                }
+            }
 
-        val topLeftPath = Path().apply {
-            moveTo(left, top + lineLength)
-            lineTo(left, top + cornerRadius)
-            quadraticTo(left, top, left + cornerRadius, top)
-            lineTo(left + lineLength, top)
+            // Map raw coordinates to visually transformed coordinates
+            targetLeft = (rawLeft - screenWidth / 2f) * animScale + screenWidth / 2f + animTransX
+            targetTop = (rawTop - screenHeight / 2f) * animScale + screenHeight / 2f + animTransY
+            targetRight = (rawRight - screenWidth / 2f) * animScale + screenWidth / 2f + animTransX
+            targetBottom = (rawBottom - screenHeight / 2f) * animScale + screenHeight / 2f + animTransY
+
+            val padding = with(density) { 15.dp.toPx() } * animScale
+            targetLeft -= padding
+            targetTop -= padding
+            targetRight += padding
+            targetBottom += padding
+            hasTarget = true
         }
-        drawPath(topLeftPath, cornerColor, style = Stroke(strokeWidth, cap = StrokeCap.Round))
 
-        val topRightPath = Path().apply {
-            moveTo(right - lineLength, top)
-            lineTo(right - cornerRadius, top)
-            quadraticTo(right, top, right, top + cornerRadius)
-            lineTo(right, top + lineLength)
+        if (!hasTarget) {
+            val baseBoxSize = with(density) { 260.dp.toPx() }
+            val boxSize = baseBoxSize * cornerPulse
+            targetLeft = (screenWidth - boxSize) / 2
+            targetTop = (screenHeight - boxSize) / 3f
+            targetRight = targetLeft + boxSize
+            targetBottom = targetTop + boxSize
         }
-        drawPath(topRightPath, cornerColor, style = Stroke(strokeWidth, cap = StrokeCap.Round))
 
-        val bottomLeftPath = Path().apply {
-            moveTo(left, bottom - lineLength)
-            lineTo(left, bottom - cornerRadius)
-            quadraticTo(left, bottom, left + cornerRadius, bottom)
-            lineTo(left + lineLength, bottom)
+        // Smooth animations for transitions
+        val animLeft by animateFloatAsState(targetValue = targetLeft, animationSpec = spring(stiffness = Spring.StiffnessLow))
+        val animTop by animateFloatAsState(targetValue = targetTop, animationSpec = spring(stiffness = Spring.StiffnessLow))
+        val animRight by animateFloatAsState(targetValue = targetRight, animationSpec = spring(stiffness = Spring.StiffnessLow))
+        val animBottom by animateFloatAsState(targetValue = targetBottom, animationSpec = spring(stiffness = Spring.StiffnessLow))
+
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+        ) {
+            val cornerRadius = 24.dp.toPx()
+            val boxWidth = animRight - animLeft
+            val boxHeight = animBottom - animTop
+
+            // Draw translucent overlay mask
+            drawRect(
+                color = Color.Black.copy(alpha = 0.6f),
+                size = size
+            )
+
+            // Clear visual frame target area
+            drawRoundRect(
+                color = Color.Transparent,
+                topLeft = Offset(animLeft, animTop),
+                size = Size(boxWidth, boxHeight),
+                cornerRadius = CornerRadius(cornerRadius),
+                blendMode = BlendMode.Clear
+            )
+
+            // Draw bracketed corners
+            val lineLength = 32.dp.toPx()
+            val strokeWidth = 5.dp.toPx()
+
+            // Top-Left corner
+            val topLeftPath = Path().apply {
+                moveTo(animLeft, animTop + lineLength)
+                lineTo(animLeft, animTop + cornerRadius)
+                quadraticTo(animLeft, animTop, animLeft + cornerRadius, animTop)
+                lineTo(animLeft + lineLength, animTop)
+            }
+            drawPath(topLeftPath, cornerColor, style = Stroke(strokeWidth, cap = StrokeCap.Round))
+
+            // Top-Right corner
+            val topRightPath = Path().apply {
+                moveTo(animRight - lineLength, animTop)
+                lineTo(animRight - cornerRadius, animTop)
+                quadraticTo(animRight, animTop, animRight, animTop + cornerRadius)
+                lineTo(animRight, animTop + lineLength)
+            }
+            drawPath(topRightPath, cornerColor, style = Stroke(strokeWidth, cap = StrokeCap.Round))
+
+            // Bottom-Left corner
+            val bottomLeftPath = Path().apply {
+                moveTo(animLeft, animBottom - lineLength)
+                lineTo(animLeft, animBottom - cornerRadius)
+                quadraticTo(animLeft, animBottom, animLeft + cornerRadius, animBottom)
+                lineTo(animLeft + lineLength, animBottom)
+            }
+            drawPath(bottomLeftPath, cornerColor, style = Stroke(strokeWidth, cap = StrokeCap.Round))
+
+            // Bottom-Right corner
+            val bottomRightPath = Path().apply {
+                moveTo(animRight, animBottom - lineLength)
+                lineTo(animRight, animBottom - cornerRadius)
+                quadraticTo(animRight, animBottom, animRight - cornerRadius, animBottom)
+                lineTo(animRight - lineLength, animBottom)
+            }
+            drawPath(bottomRightPath, cornerColor, style = Stroke(strokeWidth, cap = StrokeCap.Round))
+
+            // Draw the moving laser line inside the dynamic box
+            val laserY = animTop + (boxHeight * laserPositionProgress)
+            val laserThickness = 4.dp.toPx()
+
+            drawRect(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(Color.Transparent, laserColor, Color.Transparent),
+                    startX = animLeft,
+                    endX = animRight
+                ),
+                topLeft = Offset(animLeft, laserY - laserThickness / 2),
+                size = Size(boxWidth, laserThickness)
+            )
         }
-        drawPath(bottomLeftPath, cornerColor, style = Stroke(strokeWidth, cap = StrokeCap.Round))
-
-        val bottomRightPath = Path().apply {
-            moveTo(right, bottom - lineLength)
-            lineTo(right, bottom - cornerRadius)
-            quadraticTo(right, bottom, right - cornerRadius, bottom)
-            lineTo(right - lineLength, bottom)
-        }
-        drawPath(bottomRightPath, cornerColor, style = Stroke(strokeWidth, cap = StrokeCap.Round))
-
-        val laserY = top + (boxSize * laserPositionProgress)
-        val laserThickness = 4.dp.toPx()
-
-        drawRect(
-            brush = Brush.horizontalGradient(
-                colors = listOf(Color.Transparent, laserColor, Color.Transparent),
-                startX = left,
-                endX = right
-            ),
-            topLeft = Offset(left, laserY - laserThickness / 2),
-            size = Size(boxSize, laserThickness)
-        )
     }
 }
 
 @Composable
-fun BottomScannerUI(camera: Camera?, theme: CardTheme) {
+fun BottomScannerUI(cameraController: LifecycleCameraController, theme: CardTheme) {
     var isOn by remember { mutableStateOf(false) }
 
     Column(
@@ -308,7 +556,7 @@ fun BottomScannerUI(camera: Camera?, theme: CardTheme) {
                 IconButton(
                     onClick = {
                         isOn = !isOn
-                        camera?.cameraControl?.enableTorch(isOn)
+                        cameraController.enableTorch(isOn)
                     },
                     modifier = Modifier
                         .size(64.dp)

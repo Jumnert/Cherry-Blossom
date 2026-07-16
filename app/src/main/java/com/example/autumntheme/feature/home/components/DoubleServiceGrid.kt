@@ -1,6 +1,7 @@
 package com.example.autumntheme.feature.home.components
 
 import androidx.compose.foundation.background
+import com.example.autumntheme.ui.theme.glassEffect
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -8,6 +9,7 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,17 +20,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.autumntheme.R
 import com.example.autumntheme.feature.card.CardTheme
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.hazeEffect
 
 @Composable
 fun DoubleServiceGrid(
     modifier: Modifier = Modifier,
-    hazeState: HazeState,
     theme: CardTheme
 ) {
+    val iconsList = remember {
+        listOf(
+            R.drawable.img_acledalogo,
+            R.drawable.img_acledalogo,
+            R.drawable.img_acledalogo
+        )
+    }
+    val smallIconsList = remember {
+        listOf(
+            R.drawable.img_acledalogo,
+            R.drawable.img_acledalogo,
+            R.drawable.img_acledalogo,
+            R.drawable.img_acledalogo
+        )
+    }
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -38,36 +50,16 @@ fun DoubleServiceGrid(
         ServiceCategoryCard(
             title = "Public Service",
             modifier = Modifier.weight(1f),
-            hazeState = hazeState,
             theme = theme,
-            icons = listOf(
-                R.drawable.img_acledalogo,
-                R.drawable.img_acledalogo,
-                R.drawable.img_acledalogo
-            ),
-            smallIcons = listOf(
-                R.drawable.img_acledalogo,
-                R.drawable.img_acledalogo,
-                R.drawable.img_acledalogo,
-                R.drawable.img_acledalogo
-            )
+            icons = iconsList,
+            smallIcons = smallIconsList
         )
         ServiceCategoryCard(
             title = "Other Services",
             modifier = Modifier.weight(1f),
-            hazeState = hazeState,
             theme = theme,
-            icons = listOf(
-                R.drawable.img_acledalogo,
-                R.drawable.img_acledalogo,
-                R.drawable.img_acledalogo
-            ),
-            smallIcons = listOf(
-                R.drawable.img_acledalogo,
-                R.drawable.img_acledalogo,
-                R.drawable.img_acledalogo,
-                R.drawable.img_acledalogo
-            )
+            icons = iconsList,
+            smallIcons = smallIconsList
         )
     }
 }
@@ -76,7 +68,6 @@ fun DoubleServiceGrid(
 fun ServiceCategoryCard(
     title: String,
     modifier: Modifier = Modifier,
-    hazeState: HazeState,
     theme: CardTheme,
     icons: List<Int>,
     smallIcons: List<Int>
@@ -99,21 +90,12 @@ fun ServiceCategoryCard(
                 modifier = Modifier.size(20.dp)
             )
         }
-        
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .clip(RoundedCornerShape(24.dp))
-                .hazeEffect(
-                    state = hazeState,
-                    style = HazeStyle(
-                        backgroundColor = theme.cardBackgroundColor,
-                        tint = HazeTint(theme.cardBackgroundColor.copy(alpha = 0.5f)),
-                        blurRadius = 30.dp,
-                        noiseFactor = 0.05f
-                    )
-                )
+                .glassEffect(shape = RoundedCornerShape(24.dp), alpha = 0.15f, tintColor = theme.cardBackgroundColor, accentColor = theme.buttonColor)
                 .padding(12.dp)
         ) {
             Column(

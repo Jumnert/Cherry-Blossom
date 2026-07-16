@@ -28,21 +28,18 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import coil.compose.AsyncImage
 import com.example.autumntheme.feature.card.AutumnTheme
 import com.example.autumntheme.feature.card.CarouselItem
 import com.example.autumntheme.feature.card.GreetingCard
 import com.example.autumntheme.feature.card.PropertyCarousel
 import com.example.autumntheme.feature.card.ScreenshotThemeCard
 import com.example.autumntheme.feature.card.offercardcarousel
+import com.example.autumntheme.feature.card.CardTheme
 import com.example.autumntheme.feature.home.components.*
 import com.example.autumntheme.feature.qr.QRScannerScreen
 import com.example.autumntheme.feature.receipt.ReceiptScreen
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.hazeEffect
-import dev.chrisbanes.haze.hazeSource
 import com.example.autumntheme.feature.home.components.OutwardRoundedBottomShape
 
 
@@ -55,11 +52,12 @@ val CardColor1 = Color(0xFF334155)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeScreen() {
-    var currentTheme by remember { mutableStateOf(AutumnTheme) }
-    var showScanner by remember { mutableStateOf(false) }
-    var showReceipt by remember { mutableStateOf(false) }
-
+fun HomeScreen(
+    currentTheme: CardTheme,
+    onThemeSelected: (CardTheme) -> Unit,
+    onNavigateToScanner: () -> Unit,
+    onNavigateToReceipt: () -> Unit
+) {
     val sampleCarouselItemse = remember {
         listOf(
             CarouselItem(
@@ -115,6 +113,7 @@ fun HomeScreen() {
     }
 
     val listState = rememberLazyListState()
+    val isScrollInProgress by remember { derivedStateOf { listState.isScrollInProgress } }
     val density = LocalDensity.current
     val topBarHeightPx = with(density) { 120.dp.toPx() }
 
@@ -122,15 +121,15 @@ fun HomeScreen() {
 
     val greetingAlpha by remember {
         derivedStateOf {
-            val info = listState.layoutInfo.visibleItemsInfo.find { it.index == greetingIndex }
-            if (info == null) {
-                if (listState.firstVisibleItemIndex > greetingIndex) 0f else 1f
+            val firstVisibleIndex = listState.firstVisibleItemIndex
+            if (firstVisibleIndex > greetingIndex) {
+                0f
+            } else if (firstVisibleIndex < greetingIndex) {
+                1f
             } else {
-                val itemTop = info.offset.toFloat()
-                val itemSize = info.size.toFloat()
-
-                val hiddenAmount = (topBarHeightPx - itemTop).coerceAtLeast(0f)
-                (1f - (hiddenAmount / itemSize)).coerceIn(0f, 1f)
+                val offset = listState.firstVisibleItemScrollOffset.toFloat()
+                val fadeRange = 250f // pixels to fade out completely
+                (1f - (offset / fadeRange)).coerceIn(0f, 1f)
             }
         }
     }
@@ -138,14 +137,11 @@ fun HomeScreen() {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        val hazeState = remember { HazeState() }
-
-        AsyncImage(
-            model = currentTheme.backgroundRes,
+        Image(
+            painter = painterResource(id = currentTheme.backgroundRes),
             contentDescription = null,
             modifier = Modifier
-                .fillMaxSize()
-                .hazeSource(state = hazeState),
+                .fillMaxSize(),
             contentScale = ContentScale.Crop
         )
 
@@ -154,7 +150,7 @@ fun HomeScreen() {
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(bottom = 14.dp)
         ) {
-            stickyHeader {
+            stickyHeader(key = "sticky_header") {
                 HomeTopBar(
                     badgeCount = 0,
                     modifier = Modifier
@@ -163,14 +159,14 @@ fun HomeScreen() {
                         .zIndex(10f)
                         .clip(OutwardRoundedBottomShape(cornerRadius = 24.dp)),
                     theme = currentTheme,
-                    onQRClick = { showReceipt = true }
+                    onQRClick = onNavigateToReceipt
                 )
             }
 
-            item {
+            item(key = "spacer_top") {
                 Spacer(modifier = Modifier.height(12.dp))
             }
-            item {
+            item(key = "greeting_card") {
                 GreetingCard(
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
@@ -180,93 +176,64 @@ fun HomeScreen() {
                     theme = currentTheme
                 )
             }
-            item {
-                BalanceCard(modifier = Modifier.padding(horizontal = 16.dp), hazeState = hazeState, theme = currentTheme)
+            item(key = "balance_card") {
+                BalanceCard(modifier = Modifier.padding(horizontal = 16.dp), theme = currentTheme)
             }
 
-            item {
+            item(key = "service_grid") {
                 Spacer(modifier = Modifier.height(16.dp))
                 ServiceGrid(
-                    hazeState = hazeState,
                     modifier = Modifier.padding(horizontal = 16.dp),
                     theme = currentTheme,
-                    onScanQRClick = { showScanner = true }
+                    onScanQRClick = onNavigateToScanner
                 )
             }
-            item {
+            item(key = "section_carousel") {
                 Spacer(modifier = Modifier.height(16.dp))
-                SectionCarousel(sections = sampleCarouselItems, hazeState = hazeState, theme = currentTheme)
+                SectionCarousel(sections = sampleCarouselItems, theme = currentTheme)
             }
 
-            item {
+            item(key = "recommended_header") {
                 Spacer(modifier = Modifier.height(16.dp))
                 HeaderText(text = "Recommended", modifier = Modifier.padding(horizontal = 16.dp), theme = currentTheme)
-                ImageCarousel()
+                ImageCarousel(isParentScrolling = isScrollInProgress)
             }
 
-            item {
+            item(key = "property_carousel") {
                 Spacer(modifier = Modifier.height(16.dp))
                 PropertyCarousel(
                     items = tourismItems,
                     isTourism = true,
                     headerTitle = "Cambodia Tourism",
-                    theme = currentTheme
+                    theme = currentTheme,
+                    isParentScrolling = isScrollInProgress
                 )
             }
 
-            item {
+            item(key = "double_service_grid") {
                 Spacer(modifier = Modifier.height(16.dp))
-                DoubleServiceGrid(hazeState = hazeState, theme = currentTheme)
+                DoubleServiceGrid(theme = currentTheme)
             }
 
-            item {
+            item(key = "recent_transactions") {
                 Spacer(modifier = Modifier.height(16.dp))
-                RecentTransactions(hazeState = hazeState, theme = currentTheme)
+                RecentTransactions(theme = currentTheme)
             }
 
-            item {
+            item(key = "special_offer") {
                 Spacer(modifier = Modifier.height(16.dp))
                 HeaderText(text = "Special Offer", modifier = Modifier.padding(horizontal = 16.dp), theme = currentTheme)
-                offercardcarousel(hazeState = hazeState, theme = currentTheme)
+                offercardcarousel(theme = currentTheme)
             }
-            item {
+            item(key = "appearance_header") {
                 Spacer(modifier = Modifier.height(16.dp))
                 HeaderText(text = "Appearance", modifier = Modifier.padding(horizontal = 16.dp), theme = currentTheme)
             }
-            item {
+            item(key = "theme_card") {
                 ScreenshotThemeCard(
                     currentTheme = currentTheme,
-                    onThemeSelected = { newTheme ->
-                        currentTheme = newTheme
-                    }
+                    onThemeSelected = onThemeSelected
                 )
-            }
-        }
-
-        if (showScanner) {
-            QRScannerScreen(
-                theme = currentTheme,
-                onDismiss = { showScanner = false }
-            )
-        }
-
-        if (showReceipt) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                ReceiptScreen()
-                IconButton(
-                    onClick = { showReceipt = false },
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .padding(16.dp)
-                        .size(40.dp)
-                        .background(Color.Black.copy(alpha = 0.3f), androidx.compose.foundation.shape.CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color.White
-                    )
-                }
             }
         }
     }
@@ -275,10 +242,20 @@ fun HomeScreen() {
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen()
+    HomeScreen(
+        currentTheme = AutumnTheme,
+        onThemeSelected = {},
+        onNavigateToScanner = {},
+        onNavigateToReceipt = {}
+    )
 }
 @Preview(name = "Foldable Screen", device = Devices.PIXEL_9_PRO_FOLD, showSystemUi = true)
 @Composable
 fun HomeScreenPreview1() {
-    HomeScreen()
+    HomeScreen(
+        currentTheme = AutumnTheme,
+        onThemeSelected = {},
+        onNavigateToScanner = {},
+        onNavigateToReceipt = {}
+    )
 }

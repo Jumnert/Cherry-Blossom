@@ -15,14 +15,15 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.Image
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,12 +32,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.util.lerp
-import coil.compose.AsyncImage
 import com.example.autumntheme.R
-import com.example.autumntheme.ui.theme.WarmCream
 import kotlinx.coroutines.delay
-import kotlin.math.absoluteValue
 
 @Composable
 fun PropertyCard(
@@ -51,8 +48,8 @@ fun PropertyCard(
         shape = RoundedCornerShape(16.dp),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            AsyncImage(
-                model = imagePlaceholder,
+            Image(
+                painter = painterResource(id = imagePlaceholder),
                 contentDescription = "Property Preview",
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -98,8 +95,8 @@ fun PropertyCard(
                             )
                         }
                     } else if (profileImage != null) {
-                        AsyncImage(
-                            model = profileImage,
+                        Image(
+                            painter = painterResource(id = profileImage),
                             contentDescription = "Profile",
                             modifier = Modifier
                                 .clip(CircleShape)
@@ -126,6 +123,7 @@ fun PropertyCard(
     }
 }
 
+@Immutable
 data class CarouselItem(
     val title: String,
     val imagePlaceholder: Int,
@@ -138,18 +136,21 @@ fun PropertyCarousel(
     items: List<CarouselItem>,
     isTourism: Boolean = false,
     headerTitle: String? = null,
-    theme: CardTheme = AutumnTheme
+    theme: CardTheme = AutumnTheme,
+    isParentScrolling: Boolean = false
 ) {
     if (items.isEmpty()) return
 
     val pagerState = rememberPagerState { items.size }
 
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(5000)
-            if (!pagerState.isScrollInProgress) {
-                val nextPage = (pagerState.currentPage + 1) % items.size
-                pagerState.animateScrollToPage(nextPage, animationSpec = tween(800))
+    LaunchedEffect(isParentScrolling, pagerState.isScrollInProgress) {
+        if (!isParentScrolling && !pagerState.isScrollInProgress) {
+            while (true) {
+                delay(5000)
+                if (!isParentScrolling && !pagerState.isScrollInProgress) {
+                    val nextPage = (pagerState.currentPage + 1) % items.size
+                    pagerState.animateScrollToPage(nextPage, animationSpec = tween(800))
+                }
             }
         }
     }
@@ -188,13 +189,7 @@ fun PropertyCarousel(
             PropertyCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(140.dp)
-                    .graphicsLayer {
-                        val pageOffset = ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
-                        val fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                        alpha = 1f
-                        scaleY = lerp(0.9f, 1f, fraction)
-                    },
+                    .height(140.dp),
                 imagePlaceholder = item.imagePlaceholder,
                 title = item.title,
                 profileImage = item.profileImage,

@@ -24,6 +24,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.foundation.Image
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import coil.compose.AsyncImage
 import com.example.autumntheme.R
 import com.example.autumntheme.feature.home.CardColor
@@ -32,42 +36,41 @@ import com.example.autumntheme.ui.theme.BorderTan
 import com.example.autumntheme.ui.theme.DeepBrown
 import com.example.autumntheme.ui.theme.PumpkinOrange
 import com.example.autumntheme.ui.theme.WarmCream
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.hazeEffect
 
 val DarkBlue = Color(0xFF18314D)
 
-
 @Composable
-fun SpecialOfferCard(modifier: Modifier = Modifier,    hazeState: HazeState,
-                     imgPlaceholder: Int, title: String, theme: CardTheme = AutumnTheme) {
+fun SpecialOfferCard(
+    modifier: Modifier = Modifier,
+    imgPlaceholder: Int,
+    title: String,
+    theme: CardTheme = AutumnTheme
+) {
+    val context = LocalContext.current
+    val imageRequest = remember(imgPlaceholder) {
+        ImageRequest.Builder(context)
+            .data(imgPlaceholder)
+            .crossfade(true)
+            .allowHardware(true)
+            .build()
+    }
+    val imagePainter = rememberAsyncImagePainter(model = imageRequest)
+
     ElevatedCard(
         modifier = modifier
             .width(150.dp)
-            .height(200.dp)
-            ,
-
+            .height(200.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = theme.cardBackgroundColor)
+        colors = CardDefaults.cardColors(containerColor = theme.cardBackgroundColor.copy(alpha = 0.5f))
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            AsyncImage(
-                model = imgPlaceholder,
+            Image(
+                painter = imagePainter,
                 contentDescription = title,
                 modifier = Modifier
                     .padding(5.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .fillMaxWidth()
-                    .hazeEffect(
-                        state = hazeState,
-                        style = HazeStyle(
-                            backgroundColor = theme.cardBackgroundColor,
-                            tint = HazeTint(theme.cardBackgroundColor.copy(alpha = 0.5f)),
-                            blurRadius = 20.dp,
-                        )
-                    )
                     .weight(0.7f),
                 contentScale = ContentScale.Crop
             )
@@ -90,27 +93,30 @@ fun SpecialOfferCard(modifier: Modifier = Modifier,    hazeState: HazeState,
 }
 
 @Composable
-fun offercardcarousel(modifier: Modifier = Modifier,  hazeState: HazeState, theme: CardTheme = AutumnTheme) {
+fun offercardcarousel(modifier: Modifier = Modifier, theme: CardTheme = AutumnTheme) {
     LazyRow(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
-            SpecialOfferCard(imgPlaceholder = R.drawable.img_def_offer1, title = "get 50% Off at Clinic",        hazeState = hazeState, modifier = Modifier.padding(start = 16.dp), theme = theme)
+            SpecialOfferCard(imgPlaceholder = R.drawable.img_def_offer1, title = "get 50% Off at Clinic", modifier = Modifier.padding(start = 16.dp), theme = theme)
         }
         item {
-            SpecialOfferCard(imgPlaceholder = R.drawable.img_def_offer2, title = "Pay with ACLEDA save 50% on Store",        hazeState = hazeState, theme = theme)
+            SpecialOfferCard(imgPlaceholder = R.drawable.img_def_offer2, title = "Pay with ACLEDA save 50% on Store", theme = theme)
         }
         item {
-            SpecialOfferCard(imgPlaceholder = R.drawable.img_def_offer3, title = "Pay for fuel cheaper with ACLEDA ",        hazeState = hazeState, theme = theme)
+            SpecialOfferCard(imgPlaceholder = R.drawable.img_def_offer3, title = "Pay for fuel cheaper with ACLEDA ", theme = theme)
         }
         item {
-            SpecialOfferCard(imgPlaceholder = R.drawable.img_def_offer4, title = "Discount up to 10% with ACLEDA Cards",        hazeState = hazeState, theme = theme)
+            SpecialOfferCard(imgPlaceholder = R.drawable.img_def_offer4, title = "Discount up to 10% with ACLEDA Cards", theme = theme)
         }
         item {
-            SpecialOfferCard(imgPlaceholder = R.drawable.img_def_offer3, title = "Pay for fuel cheaper with ACLEDA ",        hazeState = hazeState, theme = theme)
+            SpecialOfferCard(imgPlaceholder = R.drawable.img_def_offer3, title = "Pay for fuel cheaper with ACLEDA ", theme = theme)
         }
         item {
-            SpecialOfferCard(imgPlaceholder = R.drawable.img_def_offer4, title = "Discount up to 10% with ACLEDA Cards",        hazeState = hazeState, modifier = Modifier.padding(end = 16.dp), theme = theme)
+            SpecialOfferCard(imgPlaceholder = R.drawable.img_def_offer4, title = "Discount up to 10% with ACLEDA Cards", modifier = Modifier.padding(end = 16.dp), theme = theme)
         }
     }
 }
@@ -118,11 +124,8 @@ fun offercardcarousel(modifier: Modifier = Modifier,  hazeState: HazeState, them
 @Preview(showBackground = true)
 @Composable
 private fun SpecialOfferCardPreview() {
-    val hazeState = remember { HazeState() }
-
     SpecialOfferCard(
         imgPlaceholder = R.drawable.img_def_offer4,
-        title = "A Special Promotion Offer",
-        hazeState = hazeState
+        title = "A Special Promotion Offer"
     )
 }

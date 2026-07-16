@@ -1,6 +1,7 @@
 package com.example.autumntheme.feature.home.components
 
 import androidx.compose.foundation.background
+import com.example.autumntheme.ui.theme.glassEffect
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -10,6 +11,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,27 +25,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.autumntheme.feature.card.AutumnTheme
 import com.example.autumntheme.feature.card.CardTheme
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.hazeEffect
 
+@Immutable
 data class Transaction(val name: String, val initials: String, val color: Color)
 
 @Composable
 fun RecentTransactions(
     modifier: Modifier = Modifier,
-    hazeState: HazeState,
     theme: CardTheme = AutumnTheme
 ) {
-    val transactions = listOf(
-        Transaction("TELA...", "TS", Color(0xFF22C55E)),
-        Transaction("THEAC...", "TC", Color(0xFF10B981)),
-        Transaction("REM P...", "RP", Color(0xFF14B8A6)),
-        Transaction("CHOU...", "CT", Color(0xFF0D9488)),
-        Transaction("Rithy E...", "RE", Color(0xFF059669)),
-        Transaction("TEST...", "TT", Color(0xFF065F46))
-    )
+    val transactions = remember {
+        listOf(
+            Transaction("TELA...", "TS", Color(0xFF22C55E)),
+            Transaction("THEAC...", "TC", Color(0xFF10B981)),
+            Transaction("REM P...", "RP", Color(0xFF14B8A6)),
+            Transaction("CHOU...", "CT", Color(0xFF0D9488)),
+            Transaction("Rithy E...", "RE", Color(0xFF059669)),
+            Transaction("TEST...", "TT", Color(0xFF065F46))
+        )
+    }
 
     Column(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
         Text(
@@ -63,14 +64,7 @@ fun RecentTransactions(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .hazeEffect(
-                        state = hazeState,
-                        style = HazeStyle(
-                            backgroundColor = theme.cardBackgroundColor,
-                            tint = HazeTint(theme.cardBackgroundColor.copy(alpha = 0.5f)),
-                            blurRadius = 20.dp,
-                        )
-                    )
+                    .glassEffect(shape = RoundedCornerShape(24.dp), alpha = 0.15f, tintColor = theme.cardBackgroundColor, accentColor = theme.buttonColor)
                     .padding(horizontal = 12.dp),
                 contentAlignment = Alignment.CenterStart
             ) {

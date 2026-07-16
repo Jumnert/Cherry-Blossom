@@ -20,7 +20,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.autumntheme.feature.home.CardColor
 
 data class ContactItem(val name: String, val avatarResId: Int)
@@ -33,12 +37,20 @@ fun ContactCarousel(
     val contactsList = listOf(
         ContactItem("Sok Dara", R.drawable.img_def_designer)
     )
+    val context = LocalContext.current
     LazyRow(
         modifier = modifier,
         contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         items(contactsList) { contact ->
+            val avatarPainter = rememberAsyncImagePainter(
+                model = ImageRequest.Builder(context)
+                    .data(contact.avatarResId)
+                    .crossfade(true)
+                    .allowHardware(true)
+                    .build()
+            )
             Card(
                 colors = CardDefaults.cardColors(containerColor = CardColor),
                 shape = RoundedCornerShape(20.dp),
@@ -54,8 +66,8 @@ fun ContactCarousel(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    AsyncImage(
-                        model = contact.avatarResId,
+                    Image(
+                        painter = avatarPainter,
                         contentDescription = contact.name,
                         modifier = Modifier
                             .size(54.dp)

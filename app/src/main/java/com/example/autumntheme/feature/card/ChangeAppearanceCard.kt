@@ -56,6 +56,14 @@ import com.example.autumntheme.ui.theme.CherryVibrantPink
 import com.example.autumntheme.ui.theme.DeepBrown
 import com.example.autumntheme.ui.theme.PumpkinOrange
 import com.example.autumntheme.ui.theme.WarmCream
+import com.example.autumntheme.ui.theme.DenimBlue
+import com.example.autumntheme.ui.theme.SoftBlueGray
+import com.example.autumntheme.ui.theme.DeepNavy
+import com.example.autumntheme.ui.theme.SnowBackground
+import com.example.autumntheme.ui.theme.MatchaBackground
+import com.example.autumntheme.ui.theme.MatchaSage
+import com.example.autumntheme.ui.theme.MatchaPrimary
+import com.example.autumntheme.ui.theme.MatchaDarkForest
 
 data class CardTheme(
     val name: String,
@@ -151,7 +159,73 @@ val CherryBlossomTheme = CardTheme(
     icExchange = R.drawable.ic_blossom_exhange
 )
 
-val AllThemes = listOf(AutumnTheme, CherryBlossomTheme)
+val DenimTheme = CardTheme(
+    name = "Denim",
+    backgroundRes = R.drawable.img_denim_background,
+    buttonColor = DenimBlue,
+    buttonTextColor = Color.White,
+    iconBorderColor = SoftBlueGray,
+    iconCornerRadius = 14.dp,
+    themeImages = listOf(
+        R.drawable.img_def_theme1,
+        R.drawable.img_def_theme2,
+        R.drawable.img_def_theme3,
+        R.drawable.img_def_theme4,
+    ),
+    sheetContainerColor = DeepNavy,
+    sheetContentColor = SoftBlueGray,
+    primaryTextColor = DeepNavy,
+    cardBackgroundColor = DeepNavy,
+    secondaryTextColor = SnowBackground,
+    leafImageRes = R.drawable.img_autumn_maple_leaf,
+    icWallet = R.drawable.ic_denim_wallet,
+    icScanner = R.drawable.ic_denim_scanner,
+    icTransfer = R.drawable.ic_denim_transfer,
+    icCard = R.drawable.ic_denim_card,
+    icDeposit = R.drawable.ic_denim_deposit,
+    icLoan = R.drawable.ic_denim_loan,
+    icPayment = R.drawable.ic_denim_payment,
+    icTopup = R.drawable.ic_denim_topup,
+    icQuickCash = R.drawable.ic_denim_quickcash,
+    icSchool = R.drawable.ic_denim_school,
+    icDepartment = R.drawable.ic_denim_department,
+    icExchange = R.drawable.ic_denim_exchange
+)
+
+val MatchaTheme = CardTheme(
+    name = "Matcha",
+    backgroundRes = R.drawable.img_matcha_background,
+    buttonColor = MatchaPrimary,
+    buttonTextColor = Color.White,
+    iconBorderColor = MatchaSage,
+    iconCornerRadius = 14.dp,
+    themeImages = listOf(
+        R.drawable.img_def_theme1,
+        R.drawable.img_def_theme2,
+        R.drawable.img_def_theme3,
+        R.drawable.img_def_theme4,
+    ),
+    sheetContainerColor = MatchaDarkForest,
+    sheetContentColor = MatchaSage,
+    primaryTextColor = MatchaDarkForest,
+    cardBackgroundColor = MatchaDarkForest,
+    secondaryTextColor = MatchaBackground,
+    leafImageRes = R.drawable.img_autumn_maple_leaf,
+    icWallet = R.drawable.ic_matcha_wallet,
+    icScanner = R.drawable.ic_matcha_scanner,
+    icTransfer = R.drawable.ic_matcha_transfer,
+    icCard = R.drawable.ic_matcha_card,
+    icDeposit = R.drawable.ic_matcha_deposit,
+    icLoan = R.drawable.ic_matcha_loan,
+    icPayment = R.drawable.ic_matcha_payment,
+    icTopup = R.drawable.ic_matcha_topup,
+    icQuickCash = R.drawable.ic_matcha_quickcash,
+    icSchool = R.drawable.ic_matcha_school,
+    icDepartment = R.drawable.ic_matcha_department,
+    icExchange = R.drawable.ic_matcha_exchange
+)
+
+val AllThemes = listOf(AutumnTheme, CherryBlossomTheme, DenimTheme, MatchaTheme)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

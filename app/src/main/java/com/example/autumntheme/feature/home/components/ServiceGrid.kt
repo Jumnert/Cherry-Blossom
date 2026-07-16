@@ -1,16 +1,17 @@
 package com.example.autumntheme.feature.home.components
 
 import androidx.compose.foundation.background
+import com.example.autumntheme.ui.theme.glassEffect
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import com.example.autumntheme.R
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,14 +33,9 @@ import com.example.autumntheme.ui.theme.BurntOrange
 import com.example.autumntheme.ui.theme.DeepBrown
 import com.example.autumntheme.ui.theme.PumpkinOrange
 import com.example.autumntheme.ui.theme.WarmCream
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.hazeEffect
 
 @Composable
 fun ServiceGrid(
-    hazeState: HazeState,
     modifier: Modifier = Modifier,
     theme: CardTheme = AutumnTheme,
     onScanQRClick: () -> Unit = {}
@@ -49,7 +45,6 @@ fun ServiceGrid(
             ServiceItemLarge(
                 iconRes = theme.icPayment,
                 label = "Payments",
-                hazeState = hazeState,
                 modifier = Modifier.weight(1f),
                 theme = theme
             )
@@ -57,7 +52,6 @@ fun ServiceGrid(
             ServiceItemLarge(
                 iconRes = theme.icTopup,
                 label = "Mobile Top-up",
-                hazeState = hazeState,
                 modifier = Modifier.weight(1.2f),
                 theme = theme
             )
@@ -67,7 +61,6 @@ fun ServiceGrid(
             ServiceItemSmall(
                 iconRes = theme.icCard,
                 label = "Cards",
-                hazeState = hazeState,
                 modifier = Modifier.weight(1f),
                 theme = theme
             )
@@ -75,7 +68,6 @@ fun ServiceGrid(
             ServiceItemSmall(
                 iconRes = theme.icScanner,
                 label = "Scan QR",
-                hazeState = hazeState,
                 modifier = Modifier.weight(1f),
                 theme = theme,
                 onClick = onScanQRClick
@@ -84,7 +76,6 @@ fun ServiceGrid(
             ServiceItemSmall(
                 iconRes = theme.icTransfer,
                 label = "Transfers",
-                hazeState = hazeState,
                 modifier = Modifier.weight(1f),
                 theme = theme
             )
@@ -94,7 +85,6 @@ fun ServiceGrid(
             ServiceItemSmall(
                 iconRes = theme.icDeposit,
                 label = "Deposits",
-                hazeState = hazeState,
                 modifier = Modifier.weight(1f),
                 theme = theme
             )
@@ -102,7 +92,6 @@ fun ServiceGrid(
             ServiceItemSmall(
                 iconRes = theme.icLoan,
                 label = "Loans",
-                hazeState = hazeState,
                 modifier = Modifier.weight(1f),
                 theme = theme
             )
@@ -110,7 +99,6 @@ fun ServiceGrid(
             ServiceItemSmall(
                 iconRes = theme.icQuickCash,
                 label = "Quick Cash",
-                hazeState = hazeState,
                 modifier = Modifier.weight(1f),
                 theme = theme
             )
@@ -122,22 +110,13 @@ fun ServiceGrid(
 fun ServiceItemLarge(
     iconRes: Int,
     label: String,
-    hazeState: HazeState,
     modifier: Modifier = Modifier,
     theme: CardTheme
 ) {
     Box(
         modifier = modifier
             .height(70.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .hazeEffect(
-                state = hazeState,
-                style = HazeStyle(
-                    backgroundColor = theme.cardBackgroundColor,
-                    tint = HazeTint(theme.cardBackgroundColor.copy(alpha = 0.5f)),
-                    blurRadius = 20.dp,
-                )
-            )
+            .glassEffect(shape = RoundedCornerShape(16.dp), alpha = 0.10f, tintColor = theme.cardBackgroundColor, accentColor = theme.buttonColor)
     ) {
         Row(
             modifier = Modifier
@@ -160,11 +139,11 @@ fun ServiceItemLarge(
         }
     }
 }
+
 @Composable
 fun ServiceItemSmall(
     iconRes: Int,
     label: String,
-    hazeState: HazeState,
     modifier: Modifier = Modifier,
     theme: CardTheme,
     onClick: () -> Unit = {}
@@ -172,15 +151,7 @@ fun ServiceItemSmall(
     Box(
         modifier = modifier
             .height(100.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .hazeEffect(
-                state = hazeState,
-                style = HazeStyle(
-                    backgroundColor = theme.cardBackgroundColor,
-                    tint = HazeTint(theme.cardBackgroundColor.copy(alpha = 0.5f)),
-                    blurRadius = 20.dp,
-                )
-            )
+            .glassEffect(shape = RoundedCornerShape(16.dp), alpha = 0.10f, tintColor = theme.cardBackgroundColor, accentColor = theme.buttonColor)
             .clickable { onClick() }
     ) {
         Column(

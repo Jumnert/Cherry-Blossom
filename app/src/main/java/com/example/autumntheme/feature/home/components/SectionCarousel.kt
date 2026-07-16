@@ -1,6 +1,8 @@
 package com.example.autumntheme.feature.home.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import com.example.autumntheme.ui.theme.glassEffect
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,6 +12,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,11 +32,8 @@ import com.example.autumntheme.feature.home.DarkBlue
 import com.example.autumntheme.ui.theme.BorderTan
 import com.example.autumntheme.ui.theme.DeepBrown
 import com.example.autumntheme.ui.theme.PumpkinOrange
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.hazeEffect
 
+@Immutable
 data class CarouselSection(val name: String, val iconRes: Int)
 
 @Composable
@@ -40,27 +41,19 @@ fun SectionCarousel(
     sections: List<CarouselSection>,
     modifier: Modifier = Modifier,
     onSectionClick: (CarouselSection) -> Unit = {},
-    hazeState: HazeState,
     theme: CardTheme = AutumnTheme
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        colors = CardDefaults.cardColors(containerColor = theme.cardBackgroundColor),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         shape = RoundedCornerShape(16.dp)
     ) {
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .hazeEffect(
-                    state = hazeState,
-                    style = HazeStyle(
-                        backgroundColor = theme.cardBackgroundColor,
-                        tint = HazeTint(theme.cardBackgroundColor.copy(alpha = 0.5f)),
-                        blurRadius = 20.dp,
-                    )
-                ),
+                .glassEffect(shape = RoundedCornerShape(16.dp), alpha = 0.12f, tintColor = theme.cardBackgroundColor, accentColor = theme.buttonColor),
             contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
@@ -69,7 +62,6 @@ fun SectionCarousel(
                     name = section.name,
                     iconRes = section.iconRes,
                     onClick = { onSectionClick(section) },
-                    hazeState = hazeState,
                     theme = theme
                 )
             }
@@ -83,28 +75,25 @@ fun CarouselItem(
     iconRes: Int,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
-    hazeState: HazeState,
     theme: CardTheme
 ) {
     Column(
         modifier = modifier
             .width(80.dp)
             .clickable { onClick() }
-            .padding(vertical = 4.dp)
-        ,
+            .padding(vertical = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Box(
             modifier = Modifier
                 .size(52.dp)
-                .background(BorderTan, CircleShape)
-                .clip(RoundedCornerShape(16.dp))
-               ,
+                .background(theme.sheetContentColor, CircleShape)
+                .clip(RoundedCornerShape(16.dp)),
             contentAlignment = Alignment.Center
         ) {
-            AsyncImage(
-                model = iconRes,
+            Image(
+                painter = painterResource(id = iconRes),
                 contentDescription = name,
                 modifier = Modifier.size(28.dp)
             )

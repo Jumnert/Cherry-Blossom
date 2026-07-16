@@ -8,7 +8,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
 import com.example.autumntheme.feature.card.AutumnTheme
 import com.example.autumntheme.feature.card.CardTheme
 import com.example.autumntheme.ui.theme.CardBrown
@@ -21,8 +22,8 @@ fun DashboardIcon(
     iconRes: Int,
     modifier: Modifier = Modifier
 ) {
-    AsyncImage(
-        model = iconRes,
+    Image(
+        painter = painterResource(id = iconRes),
         contentDescription = null,
         modifier = modifier
     )

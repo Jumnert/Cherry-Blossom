@@ -29,3 +29,16 @@ val CherryVibrantPink = Color(0xFFF25270)
 val CherryBlossomPink = Color(0xFFFFA3A8)
 val CherryBlushPink = Color(0xFFFFE5E7)
 val CherrySoftBlue = Color(0xFFD7E2EE)
+
+// Denim Theme Colors
+val SnowBackground = Color(0xFFF9F7F7)
+val SoftBlueGray = Color(0xFFDBE2EF)
+val DenimBlue = Color(0xFF3F72AF)
+val DeepNavy = Color(0xFF112D4E)
+val CoralAlert = Color(0xFFFF5757)
+
+// Matcha Theme Colors
+val MatchaBackground = Color(0xFFEDF1D6)
+val MatchaSage = Color(0xFF9DC08B)
+val MatchaPrimary = Color(0xFF609966)
+val MatchaDarkForest = Color(0xFF40513B)

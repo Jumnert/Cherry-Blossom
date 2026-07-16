@@ -16,25 +16,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.lerp
-import coil.compose.AsyncImage
-import com.example.autumntheme.ui.theme.DeepBrown
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
 import kotlinx.coroutines.delay
-import kotlin.math.absoluteValue
 
 @Composable
 fun ImageCarousel(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isParentScrolling: Boolean = false
 ) {
     val imageList = remember {
         listOf(
-            R.drawable.img_def_banner1,
-            R.drawable.img_def_banner2,
-            R.drawable.img_def_banner3,
-            R.drawable.img_def_banner4,
             R.drawable.img_def_banner1,
             R.drawable.img_def_banner2,
             R.drawable.img_def_banner3,
@@ -44,11 +38,11 @@ fun ImageCarousel(
 
     val pagerState = rememberPagerState { imageList.size }
 
-    LaunchedEffect(pagerState.isScrollInProgress) {
-        if (!pagerState.isScrollInProgress) {
+    LaunchedEffect(isParentScrolling, pagerState.isScrollInProgress) {
+        if (!isParentScrolling && !pagerState.isScrollInProgress) {
             while (true) {
                 delay(4000) // Wait 4 seconds between scrolls
-                if (!pagerState.isScrollInProgress) {
+                if (!isParentScrolling && !pagerState.isScrollInProgress) {
                     val nextPage = (pagerState.currentPage + 1) % imageList.size
                     pagerState.animateScrollToPage(
                         page = nextPage,
@@ -62,7 +56,6 @@ fun ImageCarousel(
     Column(
         modifier = modifier
             .fillMaxWidth(),
-
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         HorizontalPager(
@@ -71,25 +64,13 @@ fun ImageCarousel(
                 .fillMaxWidth(),
             pageSpacing = 12.dp,
             contentPadding = PaddingValues(horizontal = 16.dp)
-
         ) { page ->
-            AsyncImage(
-                model = imageList[page],
+            Image(
+                painter = painterResource(id = imageList[page]),
                 contentDescription = "Banner Image $page",
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(140.dp)
-                    .graphicsLayer {
-                        val pageOffset = (
-                                (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
-                                ).absoluteValue
-                        val fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                        val scaleValue = lerp(0.9f, 1.0f, fraction)
-
-                        scaleY = scaleValue
-                        scaleX = scaleValue
-                        alpha = 1f
-                    }
                     .clip(RoundedCornerShape(16.dp)),
                 contentScale = ContentScale.Crop
             )
@@ -97,7 +78,7 @@ fun ImageCarousel(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // 2. Dot Indicators
+        // Dot Indicators
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
