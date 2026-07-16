@@ -69,7 +69,7 @@ fun AppNavGraph() {
         }
         composable<ReceiptRoute> {
             Box(modifier = Modifier.fillMaxSize()) {
-                ReceiptScreen()
+                ReceiptScreen(theme = currentTheme)
                 IconButton(
                     onClick = { navController.popBackStack() },
                     modifier = Modifier

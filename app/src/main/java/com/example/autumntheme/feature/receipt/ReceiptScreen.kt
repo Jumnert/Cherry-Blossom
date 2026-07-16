@@ -45,10 +45,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.airbnb.lottie.compose.*
 import com.example.autumntheme.R
+import com.example.autumntheme.feature.card.CardTheme
+import com.example.autumntheme.feature.card.AutumnTheme
 
 @Composable
-fun ReceiptScreen() {
-    val navyBackground = Color(0xFF0C1E36)
+fun ReceiptScreen(theme: CardTheme = AutumnTheme) {
     val scrollState = rememberScrollState()
 
     val confettiCompositionResult = rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.confetti))
@@ -64,7 +65,14 @@ fun ReceiptScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(navyBackground)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        theme.buttonColor,
+                        Color.White
+                    )
+                )
+            )
     ) {
         LottieAnimation(
             composition = confettiComposition,
