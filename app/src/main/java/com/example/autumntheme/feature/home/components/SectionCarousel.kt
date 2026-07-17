@@ -3,7 +3,7 @@ package com.example.autumntheme.feature.home.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import com.example.autumntheme.ui.theme.glassEffect
-import androidx.compose.foundation.border
+import com.kyant.backdrop.Backdrop
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -13,25 +13,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import com.example.autumntheme.feature.card.AutumnTheme
 import com.example.autumntheme.feature.card.CardTheme
-import com.example.autumntheme.feature.home.CardColor
-import com.example.autumntheme.feature.home.DarkBlue
-import com.example.autumntheme.ui.theme.BorderTan
-import com.example.autumntheme.ui.theme.DeepBrown
-import com.example.autumntheme.ui.theme.PumpkinOrange
 
 @Immutable
 data class CarouselSection(val name: String, val iconRes: Int)
@@ -41,30 +33,31 @@ fun SectionCarousel(
     sections: List<CarouselSection>,
     modifier: Modifier = Modifier,
     onSectionClick: (CarouselSection) -> Unit = {},
-    theme: CardTheme = AutumnTheme
+    theme: CardTheme = AutumnTheme,
+    backdrop: Backdrop? = null
 ) {
-    Card(
+    LazyRow(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        shape = RoundedCornerShape(16.dp)
+            .padding(horizontal = 16.dp)
+            .glassEffect(
+                shape = RoundedCornerShape(16.dp),
+                alpha = 0.2f,
+                tintColor = theme.cardBackgroundColor,
+                accentColor = theme.buttonColor,
+                backdrop = backdrop,
+                isTrueGlass = (theme.name == "Glass")
+            ),
+        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .glassEffect(shape = RoundedCornerShape(16.dp), alpha = 0.12f, tintColor = theme.cardBackgroundColor, accentColor = theme.buttonColor),
-            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            items(sections) { section ->
-                CarouselItem(
-                    name = section.name,
-                    iconRes = section.iconRes,
-                    onClick = { onSectionClick(section) },
-                    theme = theme
-                )
-            }
+        items(sections) { section ->
+            CarouselItem(
+                name = section.name,
+                iconRes = section.iconRes,
+                onClick = { onSectionClick(section) },
+                theme = theme
+            )
         }
     }
 }

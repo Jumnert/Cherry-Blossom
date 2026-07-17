@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +26,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -35,9 +38,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -90,7 +96,8 @@ data class CardTheme(
     val icQuickCash: Int,
     val icSchool: Int,
     val icDepartment: Int,
-    val icExchange: Int
+    val icExchange: Int,
+    val previewImageRes: Int
 )
 
 val AutumnTheme = CardTheme(
@@ -123,7 +130,8 @@ val AutumnTheme = CardTheme(
     icQuickCash = R.drawable.ic_autumn_quickcash,
     icSchool = R.drawable.ic_autumn_school,
     icDepartment = R.drawable.ic_autumn_department,
-    icExchange = R.drawable.ic_autumn_exchange
+    icExchange = R.drawable.ic_autumn_exchange,
+    previewImageRes = R.drawable.img_theme_preview_autumn
 )
 
 val CherryBlossomTheme = CardTheme(
@@ -156,11 +164,12 @@ val CherryBlossomTheme = CardTheme(
     icQuickCash = R.drawable.ic_blossom_quickcash,
     icSchool = R.drawable.ic_blossom_school,
     icDepartment = R.drawable.ic_bollom_location,
-    icExchange = R.drawable.ic_blossom_exhange
+    icExchange = R.drawable.ic_blossom_exhange,
+    previewImageRes = R.drawable.img_theme_preview_cheeryblossom
 )
 
-val DenimTheme = CardTheme(
-    name = "Denim",
+val FrostedTheme = CardTheme(
+    name = "Frosted",
     backgroundRes = R.drawable.img_denim_background,
     buttonColor = DenimBlue,
     buttonTextColor = Color.White,
@@ -177,19 +186,20 @@ val DenimTheme = CardTheme(
     primaryTextColor = DeepNavy,
     cardBackgroundColor = DeepNavy,
     secondaryTextColor = SnowBackground,
-    leafImageRes = R.drawable.img_autumn_maple_leaf,
-    icWallet = R.drawable.ic_denim_wallet,
-    icScanner = R.drawable.ic_denim_scanner,
-    icTransfer = R.drawable.ic_denim_transfer,
-    icCard = R.drawable.ic_denim_card,
-    icDeposit = R.drawable.ic_denim_deposit,
-    icLoan = R.drawable.ic_denim_loan,
-    icPayment = R.drawable.ic_denim_payment,
-    icTopup = R.drawable.ic_denim_topup,
-    icQuickCash = R.drawable.ic_denim_quickcash,
-    icSchool = R.drawable.ic_denim_school,
-    icDepartment = R.drawable.ic_denim_department,
-    icExchange = R.drawable.ic_denim_exchange
+    leafImageRes = R.drawable.ic_snowflake,
+    icWallet = R.drawable.ic_professional_wallet,
+    icScanner = R.drawable.ic_professional_scanner,
+    icTransfer = R.drawable.ic_professional_transfer,
+    icCard = R.drawable.ic_professional_card,
+    icDeposit = R.drawable.ic_professional_deposit,
+    icLoan = R.drawable.ic_professional_loan,
+    icPayment = R.drawable.ic_professional_payment,
+    icTopup = R.drawable.ic_professional_topup,
+    icQuickCash = R.drawable.ic_professional_quickcash,
+    icSchool = R.drawable.ic_professional_school,
+    icDepartment = R.drawable.ic_professional_department,
+    icExchange = R.drawable.ic_professional_exchange,
+    previewImageRes = R.drawable.img_theme_preview_denim
 )
 
 val MatchaTheme = CardTheme(
@@ -210,7 +220,7 @@ val MatchaTheme = CardTheme(
     primaryTextColor = MatchaDarkForest,
     cardBackgroundColor = MatchaDarkForest,
     secondaryTextColor = MatchaBackground,
-    leafImageRes = R.drawable.img_autumn_maple_leaf,
+    leafImageRes = R.drawable.img_matcha_leaf,
     icWallet = R.drawable.ic_matcha_wallet,
     icScanner = R.drawable.ic_matcha_scanner,
     icTransfer = R.drawable.ic_matcha_transfer,
@@ -222,20 +232,194 @@ val MatchaTheme = CardTheme(
     icQuickCash = R.drawable.ic_matcha_quickcash,
     icSchool = R.drawable.ic_matcha_school,
     icDepartment = R.drawable.ic_matcha_department,
-    icExchange = R.drawable.ic_matcha_exchange
+    icExchange = R.drawable.ic_matcha_exchange,
+    previewImageRes = R.drawable.img_theme_preview_macha
 )
 
-val AllThemes = listOf(AutumnTheme, CherryBlossomTheme, DenimTheme, MatchaTheme)
+val GlassTheme = CardTheme(
+    name = "Glass",
+    backgroundRes = R.drawable.img_glass_background,
+    buttonColor = Color(0x33FFFFFF),
+    buttonTextColor = Color.White,
+    iconBorderColor = Color(0x66FFFFFF),
+    iconCornerRadius = 16.dp,
+    themeImages = listOf(
+        R.drawable.img_def_theme1,
+        R.drawable.img_def_theme2,
+        R.drawable.img_def_theme3,
+        R.drawable.img_def_theme4
+    ),
+    sheetContainerColor = Color(0xCC111111),
+    sheetContentColor = Color(0x33FFFFFF),
+    primaryTextColor = Color.White,
+    cardBackgroundColor = Color(0x22FFFFFF),
+    secondaryTextColor = Color(0xCCFFFFFF),
+    leafImageRes = R.drawable.img_autumn_maple_leaf,
+    icWallet = R.drawable.ic_glass_wallet,
+    icScanner = R.drawable.ic_glass_scanner,
+    icTransfer = R.drawable.ic_glass_transfer,
+    icCard = R.drawable.ic_glass_card,
+    icDeposit = R.drawable.ic_glass_deposit,
+    icLoan = R.drawable.ic_glass_loan,
+    icPayment = R.drawable.ic_glass_payment,
+    icTopup = R.drawable.ic_glass_topup,
+    icQuickCash = R.drawable.ic_glass_quickcash,
+    icSchool = R.drawable.ic_glass_school,
+    icDepartment = R.drawable.ic_glass_department,
+    icExchange = R.drawable.ic_glass_exchange,
+    previewImageRes = R.drawable.img_theme_preview_glass
+)
+
+val ProfessionalTheme = CardTheme(
+    name = "Professional",
+    backgroundRes = R.drawable.img_professional_background,
+    buttonColor = Color(0xFF1E3A8A),
+    buttonTextColor = Color.White,
+    iconBorderColor = Color(0xFF3B82F6),
+    iconCornerRadius = 14.dp,
+    themeImages = listOf(
+        R.drawable.img_def_theme1,
+        R.drawable.img_def_theme2,
+        R.drawable.img_def_theme3,
+        R.drawable.img_def_theme4,
+    ),
+    sheetContainerColor = Color(0xFF0F172A),
+    sheetContentColor = Color(0xFF334155),
+    primaryTextColor = Color.White,
+    cardBackgroundColor = Color(0xFF1E293B),
+    secondaryTextColor = Color(0xFFF8FAFC),
+    leafImageRes = R.drawable.ic_professional_wallet,
+    icWallet = R.drawable.ic_professional_wallet,
+    icScanner = R.drawable.ic_professional_scanner,
+    icTransfer = R.drawable.ic_professional_transfer,
+    icCard = R.drawable.ic_professional_card,
+    icDeposit = R.drawable.ic_professional_deposit,
+    icLoan = R.drawable.ic_professional_loan,
+    icPayment = R.drawable.ic_professional_payment,
+    icTopup = R.drawable.ic_professional_topup,
+    icQuickCash = R.drawable.ic_professional_quickcash,
+    icSchool = R.drawable.ic_professional_school,
+    icDepartment = R.drawable.ic_professional_department,
+    icExchange = R.drawable.ic_professional_exchange,
+    previewImageRes = R.drawable.img_professional_background
+)
+
+val MonochromeTheme = CardTheme(
+    name = "Monochrome",
+    backgroundRes = R.drawable.img_monochrome_background,
+    buttonColor = Color(0xFFE2E8F0),
+    buttonTextColor = Color(0xFF0F172A),
+    iconBorderColor = Color(0xFF64748B),
+    iconCornerRadius = 14.dp,
+    themeImages = listOf(
+        R.drawable.img_def_theme1,
+        R.drawable.img_def_theme2,
+        R.drawable.img_def_theme3,
+        R.drawable.img_def_theme4,
+    ),
+    sheetContainerColor = Color(0xFF0F172A),
+    sheetContentColor = Color(0xFF475569),
+    primaryTextColor = Color.White,
+    cardBackgroundColor = Color(0xFF334155),
+    secondaryTextColor = Color(0xFFF1F5F9),
+    leafImageRes = R.drawable.ic_professional_wallet,
+    icWallet = R.drawable.ic_professional_wallet,
+    icScanner = R.drawable.ic_professional_scanner,
+    icTransfer = R.drawable.ic_professional_transfer,
+    icCard = R.drawable.ic_professional_card,
+    icDeposit = R.drawable.ic_professional_deposit,
+    icLoan = R.drawable.ic_professional_loan,
+    icPayment = R.drawable.ic_professional_payment,
+    icTopup = R.drawable.ic_professional_topup,
+    icQuickCash = R.drawable.ic_professional_quickcash,
+    icSchool = R.drawable.ic_professional_school,
+    icDepartment = R.drawable.ic_professional_department,
+    icExchange = R.drawable.ic_professional_exchange,
+    previewImageRes = R.drawable.img_monochrome_background
+)
+
+val GoldTheme = CardTheme(
+    name = "Gold Premium",
+    backgroundRes = R.drawable.img_gold_background,
+    buttonColor = Color(0xFFE5C158),
+    buttonTextColor = Color(0xFF1A1A1A),
+    iconBorderColor = Color(0xFFC5A059),
+    iconCornerRadius = 14.dp,
+    themeImages = listOf(
+        R.drawable.img_def_theme1,
+        R.drawable.img_def_theme2,
+        R.drawable.img_def_theme3,
+        R.drawable.img_def_theme4,
+    ),
+    sheetContainerColor = Color(0xFF1E1A10),
+    sheetContentColor = Color(0xFFE5C158),
+    primaryTextColor = Color(0xFFE5C158),
+    cardBackgroundColor = Color(0xFF2C2415),
+    secondaryTextColor = Color(0xFFFFF2D0),
+    leafImageRes = R.drawable.ic_professional_wallet,
+    icWallet = R.drawable.ic_professional_wallet,
+    icScanner = R.drawable.ic_professional_scanner,
+    icTransfer = R.drawable.ic_professional_transfer,
+    icCard = R.drawable.ic_professional_card,
+    icDeposit = R.drawable.ic_professional_deposit,
+    icLoan = R.drawable.ic_professional_loan,
+    icPayment = R.drawable.ic_professional_payment,
+    icTopup = R.drawable.ic_professional_topup,
+    icQuickCash = R.drawable.ic_professional_quickcash,
+    icSchool = R.drawable.ic_professional_school,
+    icDepartment = R.drawable.ic_professional_department,
+    icExchange = R.drawable.ic_professional_exchange,
+    previewImageRes = R.drawable.img_gold_background
+)
+
+val HalloweenTheme = CardTheme(
+    name = "Halloween",
+    backgroundRes = R.drawable.img_halloween_background,
+    buttonColor = Color(0xFFD97706),
+    buttonTextColor = Color.White,
+    iconBorderColor = Color(0xFF7C3AED),
+    iconCornerRadius = 14.dp,
+    themeImages = listOf(
+        R.drawable.img_def_theme1,
+        R.drawable.img_def_theme2,
+        R.drawable.img_def_theme3,
+        R.drawable.img_def_theme4,
+    ),
+    sheetContainerColor = Color(0xFF111827),
+    sheetContentColor = Color(0xFFD97706),
+    primaryTextColor = Color.White,
+    cardBackgroundColor = Color(0xFF1F2937),
+    secondaryTextColor = Color(0xFFF3F4F6),
+    leafImageRes = R.drawable.ic_professional_wallet,
+    icWallet = R.drawable.ic_professional_wallet,
+    icScanner = R.drawable.ic_professional_scanner,
+    icTransfer = R.drawable.ic_professional_transfer,
+    icCard = R.drawable.ic_professional_card,
+    icDeposit = R.drawable.ic_professional_deposit,
+    icLoan = R.drawable.ic_professional_loan,
+    icPayment = R.drawable.ic_professional_payment,
+    icTopup = R.drawable.ic_professional_topup,
+    icQuickCash = R.drawable.ic_professional_quickcash,
+    icSchool = R.drawable.ic_professional_school,
+    icDepartment = R.drawable.ic_professional_department,
+    icExchange = R.drawable.ic_professional_exchange,
+    previewImageRes = R.drawable.img_halloween_background
+)
+
+val AllThemes = listOf(AutumnTheme, CherryBlossomTheme, FrostedTheme, MatchaTheme, GlassTheme, ProfessionalTheme, MonochromeTheme, GoldTheme, HalloweenTheme)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScreenshotThemeCard(
     currentTheme: CardTheme,
     availableThemes: List<CardTheme> = AllThemes,
-    onThemeSelected: (CardTheme) -> Unit
+    onThemeSelected: (CardTheme) -> Unit,
+    fontScale: Float = 1.0f,
+    onFontScaleChanged: (Float) -> Unit = {}
 ) {
     var showSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
+    val haptic = LocalHapticFeedback.current
     
     Card(
         shape = RoundedCornerShape(18.dp),
@@ -322,7 +506,7 @@ fun ScreenshotThemeCard(
                         text = "Customize",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
-                        color = WarmCream
+                          color = WarmCream
                     )
                 }
 
@@ -357,13 +541,16 @@ fun ScreenshotThemeCard(
                                 items(availableThemes) { themeOption ->
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally,
-                                        modifier = Modifier.clickable { 
-                                            onThemeSelected(themeOption)
-                                        }
+                                         modifier = Modifier.clickable { 
+                                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                             onThemeSelected(themeOption)
+                                             showSheet = false
+                                         }
                                     ) {
                                         Box(
                                             modifier = Modifier
-                                                .size(100.dp, 120.dp)
+                                                .width(100.dp)
+                                                .aspectRatio(9f / 20f)
                                                 .clip(RoundedCornerShape(12.dp))
                                                 .border(
                                                     width = if (currentTheme.name == themeOption.name) 3.dp else 1.dp,
@@ -372,7 +559,7 @@ fun ScreenshotThemeCard(
                                                 )
                                         ) {
                                             AsyncImage(
-                                                model = themeOption.backgroundRes,
+                                                model = themeOption.previewImageRes,
                                                 contentDescription = themeOption.name,
                                                 contentScale = ContentScale.Crop,
                                                 modifier = Modifier.fillMaxSize()
@@ -380,12 +567,53 @@ fun ScreenshotThemeCard(
                                         }
                                         Text(
                                             text = themeOption.name,
-                                            color = Color.White,
+                                            color = if (currentTheme.sheetContentColor.luminance() > 0.5f) currentTheme.primaryTextColor else Color.White,
                                             fontSize = 12.sp,
                                             modifier = Modifier.padding(top = 4.dp)
                                         )
                                     }
                                 }
+                            }
+                            Spacer(Modifier.height(20.dp))
+                            Text(
+                                text = "Text Size",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.White
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(currentTheme.sheetContentColor, RoundedCornerShape(16.dp))
+                                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "A", 
+                                    fontSize = 12.sp, 
+                                    color = if (currentTheme.sheetContentColor.luminance() > 0.5f) currentTheme.primaryTextColor else Color.White
+                                )
+                                Slider(
+                                    value = fontScale,
+                                    onValueChange = { onFontScaleChanged(it) },
+                                    valueRange = 0.85f..1.3f,
+                                    steps = 2,
+                                    modifier = Modifier.weight(1f).padding(horizontal = 12.dp),
+                                    colors = SliderDefaults.colors(
+                                        activeTrackColor = currentTheme.buttonColor,
+                                        inactiveTrackColor = (if (currentTheme.sheetContentColor.luminance() > 0.5f) currentTheme.primaryTextColor else Color.White).copy(alpha = 0.24f),
+                                        thumbColor = currentTheme.buttonColor,
+                                        activeTickColor = Color.Transparent,
+                                        inactiveTickColor = Color.Transparent
+                                    )
+                                )
+                                Text(
+                                    text = "A", 
+                                    fontSize = 20.sp, 
+                                    fontWeight = FontWeight.Bold, 
+                                    color = if (currentTheme.sheetContentColor.luminance() > 0.5f) currentTheme.primaryTextColor else Color.White
+                                )
                             }
                             Spacer(Modifier.height(24.dp))
                         }

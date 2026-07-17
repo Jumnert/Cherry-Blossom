@@ -226,7 +226,7 @@ fun PropertyCarousel(
 private fun previe12() {
     PropertyCard(
         modifier = Modifier.width(300.dp).height(180.dp),
-        title = "Student in rural area studying at young age was captured by the moeys team",
+        title = "a simple picture taht shwocase a studen tin rural area taht was taken by the moey tea and  postin gon facebooj ",
         imagePlaceholder = R.drawable.img_def_student_study,
         profileImage = R.drawable.img_def_moeys
     )

@@ -2,6 +2,7 @@ package com.example.autumntheme.feature.home.components
 
 import androidx.compose.foundation.background
 import com.example.autumntheme.ui.theme.glassEffect
+import com.kyant.backdrop.Backdrop
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -32,7 +33,8 @@ data class Transaction(val name: String, val initials: String, val color: Color)
 @Composable
 fun RecentTransactions(
     modifier: Modifier = Modifier,
-    theme: CardTheme = AutumnTheme
+    theme: CardTheme = AutumnTheme,
+    backdrop: Backdrop? = null
 ) {
     val transactions = remember {
         listOf(
@@ -64,7 +66,7 @@ fun RecentTransactions(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .glassEffect(shape = RoundedCornerShape(24.dp), alpha = 0.15f, tintColor = theme.cardBackgroundColor, accentColor = theme.buttonColor)
+                    .glassEffect(shape = RoundedCornerShape(24.dp), alpha = 0.15f, tintColor = theme.cardBackgroundColor, accentColor = theme.buttonColor, backdrop = backdrop, isTrueGlass = (theme.name == "Glass"))
                     .padding(horizontal = 12.dp),
                 contentAlignment = Alignment.CenterStart
             ) {

@@ -2,6 +2,7 @@ package com.example.autumntheme.feature.home.components
 
 import androidx.compose.foundation.background
 import com.example.autumntheme.ui.theme.glassEffect
+import com.kyant.backdrop.Backdrop
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,7 +25,8 @@ import com.example.autumntheme.feature.card.CardTheme
 @Composable
 fun DoubleServiceGrid(
     modifier: Modifier = Modifier,
-    theme: CardTheme
+    theme: CardTheme,
+    backdrop: Backdrop? = null
 ) {
     val iconsList = remember {
         listOf(
@@ -41,6 +43,7 @@ fun DoubleServiceGrid(
             R.drawable.img_acledalogo
         )
     }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -52,14 +55,16 @@ fun DoubleServiceGrid(
             modifier = Modifier.weight(1f),
             theme = theme,
             icons = iconsList,
-            smallIcons = smallIconsList
+            smallIcons = smallIconsList,
+            backdrop = backdrop
         )
         ServiceCategoryCard(
             title = "Other Services",
             modifier = Modifier.weight(1f),
             theme = theme,
             icons = iconsList,
-            smallIcons = smallIconsList
+            smallIcons = smallIconsList,
+            backdrop = backdrop
         )
     }
 }
@@ -70,7 +75,8 @@ fun ServiceCategoryCard(
     modifier: Modifier = Modifier,
     theme: CardTheme,
     icons: List<Int>,
-    smallIcons: List<Int>
+    smallIcons: List<Int>,
+    backdrop: Backdrop? = null
 ) {
     Column(modifier = modifier) {
         Row(
@@ -95,7 +101,7 @@ fun ServiceCategoryCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .glassEffect(shape = RoundedCornerShape(24.dp), alpha = 0.15f, tintColor = theme.cardBackgroundColor, accentColor = theme.buttonColor)
+                .glassEffect(shape = RoundedCornerShape(24.dp), alpha = 0.15f, tintColor = theme.cardBackgroundColor, accentColor = theme.buttonColor, backdrop = backdrop, isTrueGlass = (theme.name == "Glass"))
                 .padding(12.dp)
         ) {
             Column(
