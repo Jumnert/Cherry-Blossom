@@ -74,7 +74,7 @@ fun SpecialOfferCard(
                     .weight(0.7f),
                 contentScale = ContentScale.Crop
             )
-            Column(
+                Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(0.2f)

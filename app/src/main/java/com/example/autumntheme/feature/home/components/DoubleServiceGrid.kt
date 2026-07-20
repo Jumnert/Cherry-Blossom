@@ -101,9 +101,12 @@ fun ServiceCategoryCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .glassEffect(shape = RoundedCornerShape(24.dp), alpha = 0.15f, tintColor = theme.cardBackgroundColor, accentColor = theme.buttonColor, backdrop = backdrop, isTrueGlass = (theme.name == "Glass"))
+                .glassEffect(shape = RoundedCornerShape(24.dp), alpha = 0.15f, tintColor = theme.cardBackgroundColor, accentColor = if (theme.useRomdoulMotif) theme.iconBorderColor else theme.buttonColor, backdrop = backdrop, isTrueGlass = (theme.name == "Glass"), solid = !theme.useGlassEffect)
                 .padding(12.dp)
         ) {
+            if (theme.useRomdoulMotif) {
+                RomdoulCardTexture(modifier = Modifier.matchParentSize())
+            }
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)

@@ -42,3 +42,27 @@ val MatchaBackground = Color(0xFFEDF1D6)
 val MatchaSage = Color(0xFF9DC08B)
 val MatchaPrimary = Color(0xFF609966)
 val MatchaDarkForest = Color(0xFF40513B)
+
+// Lagoon Theme Colors
+val LagoonMist = Color(0xFFE3F3EC)
+val LagoonMint = Color(0xFFA9E8A6)
+val LagoonSeaGlass = Color(0xFF5A8B8D)
+val LagoonSage = Color(0xFF8BC99A)
+val LagoonTeal = Color(0xFF58977D)
+val LagoonDeepTeal = Color(0xFF0A5960)
+
+// ACLEDA-inspired professional palette (gold intentionally excluded)
+val AcledaNavy = Color(0xFF1C3365)
+val AcledaRoyalNavy = Color(0xFF1C355E)
+val AcledaBlueGray = Color(0xFF929FB4)
+val SapphireBlue = Color(0xFF3B82C4)
+val HarborBlue = Color(0xFF5B8FB9)
+val FrostedBlue = Color(0xFFE6EEF5)
+
+// Romdoul Theme Colors
+val RomdoulYellow = Color(0xFFFDD835)
+val RomdoulGreen = Color(0xFF7CB342)
+val RomdoulDeepFoliage = Color(0xFF2E7D32)
+val RomdoulOrange = Color(0xFFF4511E)
+val RomdoulOchre = Color(0xFFFB8C00)
+val RomdoulCream = Color(0xFFFFF7DA)

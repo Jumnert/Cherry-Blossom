@@ -24,6 +24,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.autumntheme.feature.card.AutumnTheme
 import com.example.autumntheme.feature.card.CardTheme
+import com.example.autumntheme.feature.card.GlassTheme
+import com.example.autumntheme.feature.card.MatchaTheme
+import com.example.autumntheme.feature.card.RomdoulTheme
 import com.example.autumntheme.feature.home.HomeScreen
 import com.example.autumntheme.feature.qr.QRScannerScreen
 import com.example.autumntheme.feature.receipt.ReceiptScreen
@@ -41,7 +44,7 @@ object ReceiptRoute
 @Composable
 fun AppNavGraph() {
     val navController = rememberNavController()
-    var currentTheme by remember { mutableStateOf(AutumnTheme) }
+    var currentTheme by remember { mutableStateOf(RomdoulTheme) }
 
     NavHost(
         navController = navController,

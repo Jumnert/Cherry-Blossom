@@ -44,9 +44,10 @@ fun SectionCarousel(
                 shape = RoundedCornerShape(16.dp),
                 alpha = 0.2f,
                 tintColor = theme.cardBackgroundColor,
-                accentColor = theme.buttonColor,
+                accentColor = if (theme.useRomdoulMotif) theme.iconBorderColor else theme.buttonColor,
                 backdrop = backdrop,
-                isTrueGlass = (theme.name == "Glass")
+                isTrueGlass = (theme.name == "Glass"),
+                solid = !theme.useGlassEffect
             ),
         contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp)

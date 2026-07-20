@@ -47,9 +47,10 @@ import com.airbnb.lottie.compose.*
 import com.example.autumntheme.R
 import com.example.autumntheme.feature.card.CardTheme
 import com.example.autumntheme.feature.card.AutumnTheme
+import com.example.autumntheme.feature.card.ProfessionalTheme
 
 @Composable
-fun ReceiptScreen(theme: CardTheme = AutumnTheme) {
+fun ReceiptScreen(theme: CardTheme = ProfessionalTheme) {
     val scrollState = rememberScrollState()
 
     val confettiCompositionResult = rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.confetti))
@@ -92,15 +93,16 @@ fun ReceiptScreen(theme: CardTheme = AutumnTheme) {
             
             // ACLEDA Logo Header
             Image(
-                painter = painterResource(id = R.drawable.img_def_ac),
-                contentDescription = "ACLEDA Logo",
-                modifier = Modifier.height(50.dp),
-                contentScale = ContentScale.Fit
+                modifier = Modifier
+                    .width(160.dp)
+                    .height(70.dp)
+                    .size(50.dp),
+                painter = painterResource(R.drawable.img_def_ac),
+                contentDescription = "Acleda Logo",
+                contentScale = ContentScale.FillWidth
             )
-
-            Spacer(Modifier.height(20.dp))
-
             // Main Receipt Card
+            Spacer(Modifier.height(20.dp))
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

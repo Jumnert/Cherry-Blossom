@@ -1,5 +1,6 @@
 package com.example.autumntheme.feature.home.components
 
+import com.example.autumntheme.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -10,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,6 +57,17 @@ fun DashboardIcon(
         painter = rememberAsyncImagePainter(model = request),
         contentDescription = null,
         modifier = modifier
+    )
+}
+
+@Composable
+fun RomdoulCardTexture(modifier: Modifier = Modifier) {
+    Image(
+        painter = painterResource(R.drawable.img_romdoul_texture),
+        contentDescription = null,
+        modifier = modifier,
+        contentScale = ContentScale.Crop,
+        alpha = 0.16f
     )
 }
 

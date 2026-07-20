@@ -66,10 +66,13 @@ fun RecentTransactions(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .glassEffect(shape = RoundedCornerShape(24.dp), alpha = 0.15f, tintColor = theme.cardBackgroundColor, accentColor = theme.buttonColor, backdrop = backdrop, isTrueGlass = (theme.name == "Glass"))
+                    .glassEffect(shape = RoundedCornerShape(24.dp), alpha = 0.15f, tintColor = theme.cardBackgroundColor, accentColor = if (theme.useRomdoulMotif) theme.iconBorderColor else theme.buttonColor, backdrop = backdrop, isTrueGlass = (theme.name == "Glass"), solid = !theme.useGlassEffect)
                     .padding(horizontal = 12.dp),
                 contentAlignment = Alignment.CenterStart
             ) {
+                if (theme.useRomdoulMotif) {
+                    RomdoulCardTexture(modifier = Modifier.matchParentSize())
+                }
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     contentPadding = PaddingValues(vertical = 12.dp)

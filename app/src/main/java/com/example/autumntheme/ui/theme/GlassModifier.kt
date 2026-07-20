@@ -1,21 +1,18 @@
 package com.example.autumntheme.ui.theme
 
-import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.kyant.backdrop.Backdrop
-import com.kyant.backdrop.drawBackdrop
-import com.kyant.backdrop.effects.blur
-import com.kyant.backdrop.effects.vibrancy
 
 /**
- * Performant glass effect modifier using Kyant's backdrop blur where available.
+ * Performant glass effect modifier using lightweight simulated glass surfaces.
  * Displays a thick, luxurious dark golden border for the Gold Premium theme,
  * using an antique, rich bronze-gold gradient.
  */
@@ -26,7 +23,16 @@ fun Modifier.glassEffect(
     accentColor: Color = Color.White,
     backdrop: Backdrop? = null,
     isTrueGlass: Boolean = false,
+    solid: Boolean = false,
 ): Modifier {
+    if (solid) {
+        return this
+            .shadow(elevation = 10.dp, shape = shape, clip = false)
+            .clip(shape)
+            .background(tintColor)
+            .border(width = 1.dp, color = accentColor.copy(alpha = 0.75f), shape = shape)
+    }
+
     // Check if the current accent color represents the Gold Premium theme
     val isGold = accentColor == Color(0xFFE5C158)
     
@@ -51,33 +57,16 @@ fun Modifier.glassEffect(
         )
     }
 
-    // Unconditionally use Kyant backdrop blur for all themes if the backdrop is available and supported
-    if (backdrop != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        return this.drawBackdrop(
-            backdrop = backdrop,
-            shape = { shape },
-            effects = {
-                vibrancy()
-                blur(10f.dp.toPx()) // Beautiful frosted blur
-            },
-            onDrawSurface = {
-                // Paint the card theme tint color
-                drawRect(tintColor.copy(alpha = alpha))
-            }
-        ).border(
-            width = 2.dp, // Thicker border to make the gold reflections clearly visible
-            brush = primaryBorderBrush,
-            shape = shape
-        )
-    }
+    // Always use the simulated surface: per-card live backdrop blur is too costly
+    // for scrolling grids and can reduce frame rate sharply on mobile GPUs.
+    val surfaceAlpha = if (isTrueGlass) maxOf(alpha, 0.30f) else alpha
 
-    // High performance simulated glass fallback for older Android versions
     return this
         .clip(shape)
         .background(
             Brush.linearGradient(
-                0.0f to tintColor.copy(alpha = alpha),
-                1.0f to tintColor.copy(alpha = alpha * 0.4f)
+                0.0f to tintColor.copy(alpha = surfaceAlpha),
+                1.0f to tintColor.copy(alpha = surfaceAlpha * 0.4f)
             )
         )
         .border(

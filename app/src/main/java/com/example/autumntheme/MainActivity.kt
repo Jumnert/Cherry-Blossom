@@ -10,7 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavGraph
+import com.example.autumntheme.blur.BlurredContentCard
+import com.example.autumntheme.dragdrop.DragDropGridScreen
 import com.example.autumntheme.feature.card.GlassCard
+import com.example.autumntheme.feature.receipt.ReceiptScreen
 import com.example.autumntheme.navigation.AppNavGraph
 import com.example.autumntheme.ui.theme.Training15DaysTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,11 +24,18 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+//        window?.setFlags(
+//            WindowManager.LayoutParams.FLAG_SECURE,
+//            WindowManager.LayoutParams.FLAG_SECURE
+//        )
+
         enableEdgeToEdge()
         setContent {
             Training15DaysTheme {
-                    AppNavGraph()
+//                BlurredContentCard()
+                AppNavGraph()
+//                DragDropGridScreen()
+//                ReceiptScreen()
                 }
             }
         }

@@ -3,6 +3,11 @@ package com.example.autumntheme.feature.home.components
 import com.example.autumntheme.R
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import com.example.autumntheme.ui.theme.glassEffect
 import com.kyant.backdrop.Backdrop
@@ -44,14 +49,26 @@ fun BalanceCard(
     var hasAnimated by rememberSaveable { mutableStateOf(false) }
     val animatedProgress = remember { Animatable(if (hasAnimated) 1f else 0f) }
     val context = LocalContext.current
-    val leafRequest = remember(theme.leafImageRes) {
-        ImageRequest.Builder(context)
-            .data(theme.leafImageRes)
-            .crossfade(true)
-            .allowHardware(true)
-            .build()
+    val leafPainter = theme.leafImageRes?.let { leafRes ->
+        val leafRequest = remember(leafRes) {
+            ImageRequest.Builder(context)
+                .data(leafRes)
+                .crossfade(true)
+                .allowHardware(true)
+                .build()
+        }
+        rememberAsyncImagePainter(model = leafRequest)
     }
-    val leafPainter = rememberAsyncImagePainter(model = leafRequest)
+    val flowerTransition = rememberInfiniteTransition(label = "balance_flower_rotation")
+    val flowerRotation by flowerTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 14000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "flower_rotation"
+    )
 
     LaunchedEffect(Unit) {
         if (!hasAnimated) {
@@ -72,11 +89,15 @@ fun BalanceCard(
                     shape = RoundedCornerShape(20.dp),
                     alpha = 0.25f,
                     tintColor = theme.cardBackgroundColor,
-                    accentColor = theme.buttonColor,
+                    accentColor = if (theme.useRomdoulMotif) theme.iconBorderColor else theme.buttonColor,
                     backdrop = backdrop,
-                    isTrueGlass = (theme.name == "Glass")
+                    isTrueGlass = (theme.name == "Glass"),
+                    solid = !theme.useGlassEffect
                 )
         ) {
+            if (theme.useRomdoulMotif) {
+                RomdoulCardTexture(modifier = Modifier.matchParentSize())
+            }
             Row(
                 modifier = Modifier
                     .padding(20.dp)
@@ -138,8 +159,10 @@ fun BalanceCard(
                             color = theme.secondaryTextColor.copy(alpha = 0.8f),
                             fontSize = 16.sp
                         )
-                        Spacer(Modifier.width(5.dp))
-                        DashboardIcon(iconRes = R.drawable.ic_def_eye, modifier = Modifier.size(24.dp))
+                        if (theme.showBalanceVisibilityIcon) {
+                            Spacer(Modifier.width(5.dp))
+                            DashboardIcon(iconRes = R.drawable.ic_def_eye, modifier = Modifier.size(24.dp))
+                        }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     BalanceRow(currency = "៛", amount = "២៣២,២៣៣", color = theme.buttonColor, textColor = theme.secondaryTextColor)
@@ -148,7 +171,7 @@ fun BalanceCard(
             }
         }
 
-        if (theme.name != "Professional" && theme.name != "Monochrome" && theme.name != "Gold Premium" && theme.name != "Halloween") {
+        if (leafPainter != null && theme.name != "Professional" && theme.name != "Monochrome" && theme.name != "Gold Premium" && theme.name != "Halloween") {
             Image(
                 painter = leafPainter,
                 contentDescription = "Left Leaf",
@@ -156,7 +179,7 @@ fun BalanceCard(
                     .size(70.dp)
                     .align(Alignment.TopStart)
                     .offset(x = (-10).dp, y = (-10).dp)
-                    .rotate(50f)
+                    .rotate(50f + flowerRotation)
             )
             Image(
                 painter = leafPainter,
@@ -165,7 +188,7 @@ fun BalanceCard(
                     .size(50.dp)
                     .align(Alignment.TopEnd)
                     .offset(x = (10).dp, y = (-2).dp)
-                    .rotate(-45f)
+                    .rotate(-45f - flowerRotation)
             )
         }
     }
