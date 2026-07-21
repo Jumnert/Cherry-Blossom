@@ -65,8 +65,8 @@ fun RomdoulCardTexture(modifier: Modifier = Modifier) {
     Image(
         painter = painterResource(R.drawable.img_romdoul_texture),
         contentDescription = null,
-        modifier = modifier,
         contentScale = ContentScale.Crop,
+        modifier = modifier,
         alpha = 0.30f
     )
 }

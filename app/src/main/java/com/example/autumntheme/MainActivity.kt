@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraph
 import com.example.autumntheme.blur.BlurredContentCard
+import com.example.autumntheme.core.Recompose.AnimatedButton
 import com.example.autumntheme.dragdrop.DragDropGridScreen
 import com.example.autumntheme.feature.card.GlassCard
 import com.example.autumntheme.feature.receipt.ReceiptScreen
@@ -32,8 +33,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Training15DaysTheme {
+//                AnimatedButton()
 //                BlurredContentCard()
                 AppNavGraph()
+//                AppNavGra
 //                DragDropGridScreen()
 //                ReceiptScreen()
                 }

@@ -120,7 +120,16 @@ data class CardTheme(
     val logoRes: Int = R.drawable.img_def_ac,
     val useRomdoulMotif: Boolean = false,
     val useFrostedSurface: Boolean = false,
-    val backgroundScrimColor: Color = Color.Transparent
+    val backgroundScrimColor: Color = Color.Transparent,
+    val strokeWidth: Float = 14f,
+    val arcTrackColor: Color? = null,
+    val arcPrimaryColor: Color? = null,
+    val arcSecondaryColor: Color? = null,
+    val arcCanvasSize: Dp = 90.dp,
+    val arcPrimaryStartAngle: Float = -150f,
+    val arcPrimarySweepAngle: Float = 260f,
+    val arcSecondaryStartAngle: Float = 120f,
+    val arcSecondarySweepAngle: Float = 20f
 )
 
 val  AutumnTheme = CardTheme(
@@ -292,7 +301,7 @@ val LagoonTheme = CardTheme(
     sheetContainerColor = LagoonDeepTeal,
     sheetContentColor = LagoonSage,
     primaryTextColor = LagoonDeepTeal,
-    cardBackgroundColor = LagoonTeal,
+    cardBackgroundColor = LagoonDeepTeal,
     secondaryTextColor = LagoonMist,
     leafImageRes = R.drawable.ic_lagoon_leaf,
     icWallet = R.drawable.ic_professional_wallet,
@@ -504,6 +513,7 @@ val RomdoulTheme = CardTheme(
 
 val RomdoulDarkTheme = CardTheme(
     name = "Romdoul Dark",
+    leafImageRes = R.drawable.img_romdoul_flower,
     backgroundRes = R.drawable.img_romdoul_dark_background,
     buttonColor = Color.White,
     buttonTextColor = Color(0xFF102A1C),
@@ -515,7 +525,6 @@ val RomdoulDarkTheme = CardTheme(
     primaryTextColor = Color.White,
     cardBackgroundColor = Color(0xFF173D28),
     secondaryTextColor = Color(0xFFFFFDF2),
-    leafImageRes = null,
     icWallet = R.drawable.ic_romdoul_wallet,
     icScanner = R.drawable.ic_romdoul_scanner,
     icTransfer = R.drawable.ic_romdoul_transfer,
@@ -530,7 +539,8 @@ val RomdoulDarkTheme = CardTheme(
     icExchange = R.drawable.ic_romdoul_exchange,
     previewImageRes = R.drawable.img_romdoul_preview_dark,
     useGlassEffect = false,
-    useRomdoulMotif = true
+    useRomdoulMotif = true,
+    logoRes = R.drawable.img_ac_logo_white
 )
 
 val ProfessionalTheme1 = CardTheme(
@@ -600,7 +610,8 @@ val MonochromeTheme = CardTheme(
     icExchange = R.drawable.ic_professional_exchange,
     previewImageRes = R.drawable.img_monochrome_theme_preview,
     useGlassEffect = false,
-    logoRes = R.drawable.img_ac_logo_white
+    logoRes = R.drawable.img_ac_logo_white,
+    arcPrimaryColor = Color.White
 )
 
 val GoldTheme = CardTheme(
@@ -742,18 +753,34 @@ val EmblemProfessionalTheme = CardTheme(
     logoRes = R.drawable.img_ac_logo_white
 )
 
-val ExecutiveTheme = ClassicRetroTheme.copy(
+val ExecutiveTheme = CardTheme(
     name = "Executive",
     backgroundRes = R.drawable.img_executive_background,
-    buttonColor = Color(0xFFC9A45B),
+    buttonColor = Color(0xFF3A1822),
     buttonTextColor = Color(0xFF2A1219),
     iconBorderColor = Color(0xFFF4EBDD),
     sheetContainerColor = Color(0xFF2A1219),
-    sheetContentColor = Color(0xFF4A1F2A),
+    sheetContentColor = Color(0xFF3A1822),
     primaryTextColor = Color(0xFFF4EBDD),
     cardBackgroundColor = Color(0xFF3A1822),
     secondaryTextColor = Color(0xFFE5C98E),
-    previewImageRes = R.drawable.img_executive_background,
+    iconCornerRadius = 16.dp,
+    themeImages = listOf(R.drawable.img_def_theme1, R.drawable.img_def_theme2, R.drawable.img_def_theme3, R.drawable.img_def_theme4),
+    leafImageRes = null,
+    icWallet = R.drawable.ic_exe_wallet,
+    icScanner = R.drawable.ic_exe_scanner,
+    icTransfer = R.drawable.ic_exe_transfer,
+    icCard = R.drawable.ic_exe_card,
+    icDeposit = R.drawable.ic_exe_deposit,
+    icLoan = R.drawable.ic_exe_loan,
+    icPayment = R.drawable.ic_exe_payment,
+    icTopup = R.drawable.ic_exe_topup,
+    icQuickCash = R.drawable.ic_exe_quickcash,
+    icSchool = R.drawable.ic_exe_school,
+    icDepartment = R.drawable.ic_exe_department,
+    icExchange = R.drawable.ic_exe_exchange,
+    previewImageRes = R.drawable.theme_exe_preview,
+    useGlassEffect = false,
     logoRes = R.drawable.img_ac_logo_white
 )
 
@@ -792,7 +819,7 @@ val Professonal1 = CardTheme(
     previewImageRes = R.drawable.img_halloween_background
 )
 
-val AllThemes = listOf( ClassicRetroTheme, EmblemProfessionalTheme, ExecutiveTheme,GoldTheme, GoldDarkTheme, RomdoulTheme, RomdoulDarkTheme, AutumnTheme, CherryBlossomTheme, MatchaTheme, LagoonTheme, ProfessionalTheme, SapphireTheme, HarborTheme, MidnightTheme, MonochromeTheme,)
+val AllThemes = listOf( ClassicRetroTheme, EmblemProfessionalTheme, ExecutiveTheme, MonochromeTheme,GoldTheme, GoldDarkTheme, RomdoulTheme, RomdoulDarkTheme, AutumnTheme, CherryBlossomTheme, MatchaTheme, LagoonTheme, ProfessionalTheme, SapphireTheme, HarborTheme, MidnightTheme)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -919,7 +946,10 @@ fun ScreenshotThemeCard(
                             LazyRow(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .background(currentTheme.sheetContentColor, RoundedCornerShape(16.dp))
+                                    .background(
+                                        currentTheme.sheetContentColor,
+                                        RoundedCornerShape(16.dp)
+                                    )
                                     .padding(12.dp),
                                 horizontalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
@@ -970,7 +1000,10 @@ fun ScreenshotThemeCard(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .background(currentTheme.sheetContentColor, RoundedCornerShape(16.dp))
+                                    .background(
+                                        currentTheme.sheetContentColor,
+                                        RoundedCornerShape(16.dp)
+                                    )
                                     .padding(horizontal = 16.dp, vertical = 12.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -984,7 +1017,9 @@ fun ScreenshotThemeCard(
                                     onValueChange = { onFontScaleChanged(it) },
                                     valueRange = 0.85f..1.3f,
                                     steps = 2,
-                                    modifier = Modifier.weight(1f).padding(horizontal = 12.dp),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(horizontal = 12.dp),
                                     colors = SliderDefaults.colors(
                                         activeTrackColor = currentTheme.buttonColor,
                                         inactiveTrackColor = (if (currentTheme.sheetContentColor.luminance() > 0.5f) currentTheme.primaryTextColor else Color.White).copy(alpha = 0.24f),

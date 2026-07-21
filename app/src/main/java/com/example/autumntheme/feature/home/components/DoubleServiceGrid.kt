@@ -30,17 +30,17 @@ fun DoubleServiceGrid(
 ) {
     val iconsList = remember {
         listOf(
-            R.drawable.img_acledalogo,
-            R.drawable.img_acledalogo,
-            R.drawable.img_acledalogo
+            R.drawable.mpwt,
+            R.drawable.vet,
+            R.drawable.angkordc
         )
     }
     val smallIconsList = remember {
         listOf(
-            R.drawable.img_acledalogo,
-            R.drawable.img_acledalogo,
-            R.drawable.img_acledalogo,
-            R.drawable.img_acledalogo
+            R.drawable.mpwt,
+            R.drawable.vet,
+            R.drawable.angkordc,
+            R.drawable.vet
         )
     }
 

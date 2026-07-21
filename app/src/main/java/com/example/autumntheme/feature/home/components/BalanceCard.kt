@@ -95,28 +95,28 @@ fun BalanceCard(
                     modifier = Modifier.size(100.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    val strokeWidth = 14f
+                    val strokeWidth = theme.strokeWidth
                     val progress = animatedProgress.value
 
-                    Canvas(modifier = Modifier.size(90.dp)) {
+                    Canvas(modifier = Modifier.size(theme.arcCanvasSize)) {
                         drawArc(
-                            color = theme.buttonColor.copy(alpha = 0.1f),
+                            color = theme.arcTrackColor ?: theme.buttonColor.copy(alpha = 0.1f),
                             startAngle = 0f,
                             sweepAngle = 360f * progress,
                             useCenter = false,
                             style = Stroke(width = strokeWidth)
                         )
                         drawArc(
-                            color = theme.buttonColor,
-                            startAngle = -150f + (50f * progress),
-                            sweepAngle = 260f * progress,
+                            color = theme.arcPrimaryColor ?: theme.buttonColor,
+                            startAngle = theme.arcPrimaryStartAngle + (50f * progress),
+                            sweepAngle = theme.arcPrimarySweepAngle * progress,
                             useCenter = false,
                             style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
                         )
                         drawArc(
-                            color = theme.iconBorderColor,
-                            startAngle = 120f + (50f * progress),
-                            sweepAngle = 20f * progress,
+                            color = theme.arcSecondaryColor ?: theme.iconBorderColor,
+                            startAngle = theme.arcSecondaryStartAngle + (50f * progress),
+                            sweepAngle = theme.arcSecondarySweepAngle * progress,
                             useCenter = false,
                             style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
                         )

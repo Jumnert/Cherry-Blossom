@@ -187,7 +187,7 @@ fun ServiceItemLarge(
                 modifier = Modifier
                     .size(45.dp)
                     .graphicsLayer {
-                        val iconScale = if (theme.name.contains("Gold") || theme.useRomdoulMotif || theme.name == "Emblem Professional") 1.2f else 1f
+                        val iconScale = if (theme.name.contains("Gold") || theme.name == "Emblem Professional") 1.2f else 1f
                         scaleX = iconScale
                         scaleY = iconScale
                     }

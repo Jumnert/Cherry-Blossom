@@ -37,6 +37,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("dev.chrisbanes.haze:haze:1.7.2") // use latest
     implementation("dev.chrisbanes.haze:haze-materials:1.7.2")
     implementation("com.airbnb.android:lottie-compose:6.7.1")
