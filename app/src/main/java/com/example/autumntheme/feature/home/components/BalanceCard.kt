@@ -3,11 +3,6 @@ package com.example.autumntheme.feature.home.components
 import com.example.autumntheme.R
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import com.example.autumntheme.ui.theme.glassEffect
 import com.kyant.backdrop.Backdrop
@@ -28,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
@@ -59,16 +55,6 @@ fun BalanceCard(
         }
         rememberAsyncImagePainter(model = leafRequest)
     }
-    val flowerTransition = rememberInfiniteTransition(label = "balance_flower_rotation")
-    val flowerRotation by flowerTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 14000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "flower_rotation"
-    )
 
     LaunchedEffect(Unit) {
         if (!hasAnimated) {
@@ -92,6 +78,7 @@ fun BalanceCard(
                     accentColor = if (theme.useRomdoulMotif) theme.iconBorderColor else theme.buttonColor,
                     backdrop = backdrop,
                     isTrueGlass = (theme.name == "Glass"),
+                    frosted = theme.useFrostedSurface,
                     solid = !theme.useGlassEffect
                 )
         ) {
@@ -135,7 +122,16 @@ fun BalanceCard(
                         )
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        DashboardIcon(iconRes = theme.icWallet, modifier = Modifier.size(45.dp))
+                        DashboardIcon(
+                            iconRes = theme.icWallet,
+                            modifier = Modifier
+                                .size(45.dp)
+                                .graphicsLayer {
+                                    val iconScale = if (theme.name.contains("Gold") || theme.useRomdoulMotif || theme.name == "Emblem Professional") 1.29f else 1f
+                                    scaleX = iconScale
+                                    scaleY = iconScale
+                                }
+                        )
                         Text(
                             text = "Accounts",
                             color = theme.secondaryTextColor,
@@ -179,7 +175,7 @@ fun BalanceCard(
                     .size(70.dp)
                     .align(Alignment.TopStart)
                     .offset(x = (-10).dp, y = (-10).dp)
-                    .rotate(50f + flowerRotation)
+                    .rotate(50f)
             )
             Image(
                 painter = leafPainter,
@@ -188,7 +184,7 @@ fun BalanceCard(
                     .size(50.dp)
                     .align(Alignment.TopEnd)
                     .offset(x = (10).dp, y = (-2).dp)
-                    .rotate(-45f - flowerRotation)
+                    .rotate(-45f)
             )
         }
     }

@@ -202,8 +202,7 @@ fun HomeScreen(
             Image(
                 painter = painterResource(id = currentTheme.backgroundRes),
                 contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
             if (currentTheme.backgroundScrimColor != Color.Transparent) {

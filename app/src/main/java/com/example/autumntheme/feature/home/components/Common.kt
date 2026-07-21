@@ -67,7 +67,7 @@ fun RomdoulCardTexture(modifier: Modifier = Modifier) {
         contentDescription = null,
         modifier = modifier,
         contentScale = ContentScale.Crop,
-        alpha = 0.16f
+        alpha = 0.30f
     )
 }
 

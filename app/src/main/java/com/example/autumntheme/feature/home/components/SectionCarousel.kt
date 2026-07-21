@@ -47,6 +47,7 @@ fun SectionCarousel(
                 accentColor = if (theme.useRomdoulMotif) theme.iconBorderColor else theme.buttonColor,
                 backdrop = backdrop,
                 isTrueGlass = (theme.name == "Glass"),
+                frosted = theme.useFrostedSurface,
                 solid = !theme.useGlassEffect
             ),
         contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),

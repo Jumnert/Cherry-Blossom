@@ -40,7 +40,7 @@ fun RecentTransactions(
         listOf(
             Transaction("TELA...", "TS", Color(0xFF22C55E)),
             Transaction("THEAC...", "TC", Color(0xFF10B981)),
-            Transaction("REM P...", "RP", Color(0xFF14B8A6)),
+            Transaction("HAI S...", "RP", Color(0xFF14B8A6)),
             Transaction("CHOU...", "CT", Color(0xFF0D9488)),
             Transaction("Rithy E...", "RE", Color(0xFF059669)),
             Transaction("TEST...", "TT", Color(0xFF065F46))
@@ -66,7 +66,7 @@ fun RecentTransactions(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .glassEffect(shape = RoundedCornerShape(24.dp), alpha = 0.15f, tintColor = theme.cardBackgroundColor, accentColor = if (theme.useRomdoulMotif) theme.iconBorderColor else theme.buttonColor, backdrop = backdrop, isTrueGlass = (theme.name == "Glass"), solid = !theme.useGlassEffect)
+                    .glassEffect(shape = RoundedCornerShape(24.dp), alpha = 0.15f, tintColor = theme.cardBackgroundColor, accentColor = if (theme.useRomdoulMotif) theme.iconBorderColor else theme.buttonColor, backdrop = backdrop, isTrueGlass = (theme.name == "Glass"), frosted = theme.useFrostedSurface, solid = !theme.useGlassEffect)
                     .padding(horizontal = 12.dp),
                 contentAlignment = Alignment.CenterStart
             ) {

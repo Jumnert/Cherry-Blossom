@@ -76,7 +76,7 @@ fun ServiceGrid(
         state = gridState,
         modifier = modifier
             .fillMaxWidth()
-            .height(310.dp) // Fixed height prevents infinite height measurement crash
+            .height(310.dp)
             .pointerInput(dragDropState) {
                 detectDragGesturesAfterLongPress(
                     onDragStart = { offset ->
@@ -168,6 +168,7 @@ fun ServiceItemLarge(
                 accentColor = if (theme.useRomdoulMotif) theme.iconBorderColor else theme.buttonColor,
                 backdrop = backdrop,
                 isTrueGlass = (theme.name == "Glass"),
+                frosted = theme.useFrostedSurface,
                 solid = !theme.useGlassEffect
             )
             .clickable { onClick() }
@@ -181,7 +182,16 @@ fun ServiceItemLarge(
                 .padding(horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            DashboardIcon(iconRes = iconRes, modifier = Modifier.size(45.dp))
+            DashboardIcon(
+                iconRes = iconRes,
+                modifier = Modifier
+                    .size(45.dp)
+                    .graphicsLayer {
+                        val iconScale = if (theme.name.contains("Gold") || theme.useRomdoulMotif || theme.name == "Emblem Professional") 1.2f else 1f
+                        scaleX = iconScale
+                        scaleY = iconScale
+                    }
+            )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = label,
@@ -212,6 +222,7 @@ fun ServiceItemSmall(
                 accentColor = if (theme.useRomdoulMotif) theme.iconBorderColor else theme.buttonColor,
                 backdrop = backdrop,
                 isTrueGlass = (theme.name == "Glass"),
+                frosted = theme.useFrostedSurface,
                 solid = !theme.useGlassEffect
             )
             .clickable { onClick() }
@@ -226,7 +237,16 @@ fun ServiceItemSmall(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            DashboardIcon(iconRes = iconRes, modifier = Modifier.size(55.dp))
+            DashboardIcon(
+                iconRes = iconRes,
+                modifier = Modifier
+                    .size(55.dp)
+                    .graphicsLayer {
+                        val iconScale = if (theme.name.contains("Gold") || theme.useRomdoulMotif || theme.name == "Emblem Professional") 1.24f else 1f
+                        scaleX = iconScale
+                        scaleY = iconScale
+                    }
+            )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = label,

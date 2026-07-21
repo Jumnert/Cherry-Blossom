@@ -1,5 +1,6 @@
 package com.example.autumntheme.feature.card
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -118,15 +119,16 @@ data class CardTheme(
     val showBalanceVisibilityIcon: Boolean = true,
     val logoRes: Int = R.drawable.img_def_ac,
     val useRomdoulMotif: Boolean = false,
+    val useFrostedSurface: Boolean = false,
     val backgroundScrimColor: Color = Color.Transparent
 )
 
 val  AutumnTheme = CardTheme(
     name = "Autumn",
-    backgroundRes = R.drawable.img_autumn_background,
-    buttonColor = PumpkinOrange,
+    backgroundRes = R.drawable.img_autumn_revamp_background,
+    buttonColor = Color(0xFFC86520),
     buttonTextColor = Color.White,
-    iconBorderColor = AmberGold,
+    iconBorderColor = Color(0xFFF0B45A),
     iconCornerRadius = 12.dp,
     themeImages = listOf(
         R.drawable.img_def_banner1,
@@ -134,11 +136,11 @@ val  AutumnTheme = CardTheme(
         R.drawable.img_def_banner1,
         R.drawable.img_def_banner4,
     ),
-    sheetContainerColor = DeepBrown,
-    sheetContentColor = BorderTan,
-    primaryTextColor = DeepBrown,
-    cardBackgroundColor = DeepBrown,
-    secondaryTextColor = WarmCream,
+    sheetContainerColor = Color(0xFF3D2817),
+    sheetContentColor = Color(0xFF70401F),
+    primaryTextColor = Color(0xFF432512),
+    cardBackgroundColor = Color(0xFFFFF3E0),
+    secondaryTextColor = Color(0xFF5E381D),
     leafImageRes = R.drawable.img_autumn_maple_leaf,
     icWallet = R.drawable.ic_autumn_wallet,
     icScanner = R.drawable.ic_autumn_scanner,
@@ -152,17 +154,18 @@ val  AutumnTheme = CardTheme(
     icSchool = R.drawable.ic_autumn_school,
     icDepartment = R.drawable.ic_autumn_department,
     icExchange = R.drawable.ic_autumn_exchange,
-    previewImageRes = R.drawable.img_theme_preview_autumn,
-    useGlassEffect = false
+    previewImageRes = R.drawable.img_autumn_revamp_background,
+    useGlassEffect = false,
+    useFrostedSurface = false
     
 )
 
 val CherryBlossomTheme = CardTheme(
     name = "Cherry Blossom",
-    backgroundRes = R.drawable.img_blossom_background,
-    buttonColor = CherryVibrantPink,
+    backgroundRes = R.drawable.img_blossom_revamp_background,
+    buttonColor = Color(0xFFD94369),
     buttonTextColor = Color.White,
-    iconBorderColor = CherryBlossomPink,
+    iconBorderColor = Color(0xFFFF9EAE),
     iconCornerRadius = 18.dp,
     themeImages = listOf(
         R.drawable.img_def_theme5,
@@ -171,10 +174,10 @@ val CherryBlossomTheme = CardTheme(
         R.drawable.img_def_theme3,
     ),
     sheetContainerColor = CherryDeepPink,
-    sheetContentColor = CherryVibrantPink,
+    sheetContentColor = Color(0xFFC92F5B),
     primaryTextColor = CherryDeepPink,
-    cardBackgroundColor = CherryVibrantPink,
-    secondaryTextColor = CherryBlushPink,
+    cardBackgroundColor = Color(0xFFFFF6F8),
+    secondaryTextColor = CherryDeepPink,
     leafImageRes = R.drawable.img_blossom_sakura_leaf,
     icWallet = R.drawable.ic_blossom_wallet,
     icScanner = R.drawable.ic_blossom_scanner,
@@ -188,7 +191,7 @@ val CherryBlossomTheme = CardTheme(
     icSchool = R.drawable.ic_blossom_school,
     icDepartment = R.drawable.ic_bollom_location,
     icExchange = R.drawable.ic_blossom_exhange,
-    previewImageRes = R.drawable.img_theme_preview_cheeryblossom
+    previewImageRes = R.drawable.img_blossom_revamp_background
 )
 val FrostedTheme = CardTheme(
     name = "Frosted",
@@ -269,7 +272,8 @@ val MatchaTheme = CardTheme(
 //    icSchool = R.drawable.ic_matcha_school,
 //    icDepartment = R.drawable.ic_matcha_department,
 //    icExchange = R.drawable.ic_matcha_exchange,
-    previewImageRes = R.drawable.img_theme_preview_macha
+    previewImageRes = R.drawable.img_theme_preview_macha,
+    useGlassEffect = false
 )
 
 val LagoonTheme = CardTheme(
@@ -303,7 +307,8 @@ val LagoonTheme = CardTheme(
     icSchool = R.drawable.ic_professional_school,
     icDepartment = R.drawable.ic_professional_department,
     icExchange = R.drawable.ic_professional_exchange,
-    previewImageRes = R.drawable.img_lagoon_background
+    previewImageRes = R.drawable.img_lagoon_background,
+    useGlassEffect = false
 )
 
 val GlassTheme = CardTheme(
@@ -492,9 +497,40 @@ val RomdoulTheme = CardTheme(
     icSchool = R.drawable.ic_romdoul_school,
     icDepartment = R.drawable.ic_romdoul_department,
     icExchange = R.drawable.ic_romdoul_exchange,
-    previewImageRes = R.drawable.img_romdoul_background,
+    previewImageRes = R.drawable.img_romdoul_preview,
     useRomdoulMotif = true,
     useGlassEffect = false
+)
+
+val RomdoulDarkTheme = CardTheme(
+    name = "Romdoul Dark",
+    backgroundRes = R.drawable.img_romdoul_dark_background,
+    buttonColor = Color.White,
+    buttonTextColor = Color(0xFF102A1C),
+    iconBorderColor = Color(0xFFFFF3A3),
+    iconCornerRadius = 18.dp,
+    themeImages = listOf(R.drawable.img_def_theme1, R.drawable.img_def_theme2, R.drawable.img_def_theme3, R.drawable.img_def_theme4),
+    sheetContainerColor = Color(0xFF102A1C),
+    sheetContentColor = Color(0xFF1B4A30),
+    primaryTextColor = Color.White,
+    cardBackgroundColor = Color(0xFF173D28),
+    secondaryTextColor = Color(0xFFFFFDF2),
+    leafImageRes = null,
+    icWallet = R.drawable.ic_romdoul_wallet,
+    icScanner = R.drawable.ic_romdoul_scanner,
+    icTransfer = R.drawable.ic_romdoul_transfer,
+    icCard = R.drawable.ic_romdoul_card,
+    icDeposit = R.drawable.ic_romdoul_deposit,
+    icLoan = R.drawable.ic_romdoul_loan,
+    icPayment = R.drawable.ic_romdoul_payment,
+    icTopup = R.drawable.ic_romdoul_topup,
+    icQuickCash = R.drawable.ic_romdoul_quickcash,
+    icSchool = R.drawable.ic_romdoul_school,
+    icDepartment = R.drawable.ic_romdoul_department,
+    icExchange = R.drawable.ic_romdoul_exchange,
+    previewImageRes = R.drawable.img_romdoul_preview_dark,
+    useGlassEffect = false,
+    useRomdoulMotif = true
 )
 
 val ProfessionalTheme1 = CardTheme(
@@ -533,8 +569,8 @@ val ProfessionalTheme1 = CardTheme(
 
 val MonochromeTheme = CardTheme(
     name = "Monochrome",
-    backgroundRes = R.drawable.img_monochrome_background,
-    buttonColor = Color(0xFFE2E8F0),
+    backgroundRes = R.drawable.img_mono1,
+    buttonColor = Color(0xFF000000),
     buttonTextColor = Color(0xFF0F172A),
     iconBorderColor = Color(0xFF64748B),
     iconCornerRadius = 14.dp,
@@ -547,7 +583,7 @@ val MonochromeTheme = CardTheme(
     sheetContainerColor = Color(0xFF0F172A),
     sheetContentColor = Color(0xFF475569),
     primaryTextColor = Color.White,
-    cardBackgroundColor = Color(0xFF334155),
+    cardBackgroundColor = Color(0xFF000000),
     secondaryTextColor = Color(0xFFF1F5F9),
     leafImageRes = R.drawable.ic_professional_wallet,
     icWallet = R.drawable.ic_professional_wallet,
@@ -562,15 +598,17 @@ val MonochromeTheme = CardTheme(
     icSchool = R.drawable.ic_professional_school,
     icDepartment = R.drawable.ic_professional_department,
     icExchange = R.drawable.ic_professional_exchange,
-    previewImageRes = R.drawable.img_monochrome_background
+    previewImageRes = R.drawable.img_monochrome_theme_preview,
+    useGlassEffect = false,
+    logoRes = R.drawable.img_ac_logo_white
 )
 
 val GoldTheme = CardTheme(
     name = "Gold Premium",
-    backgroundRes = R.drawable.img_gold_background,
-    buttonColor = Color(0xFFE5C158),
-    buttonTextColor = Color(0xFF1A1A1A),
-    iconBorderColor = Color(0xFFC5A059),
+    backgroundRes = R.drawable.img_golden_2,
+    buttonColor = Color(0xFFD7B45F),
+    buttonTextColor = Color(0xFF181207),
+    iconBorderColor = Color(0xFFF1D782),
     iconCornerRadius = 14.dp,
     themeImages = listOf(
         R.drawable.img_def_theme1,
@@ -578,28 +616,149 @@ val GoldTheme = CardTheme(
         R.drawable.img_def_theme3,
         R.drawable.img_def_theme4,
     ),
-    sheetContainerColor = Color(0xFF1E1A10),
-    sheetContentColor = Color(0xFFE5C158),
-    primaryTextColor = Color(0xFFE5C158),
-    cardBackgroundColor = Color(0xFF2C2415),
-    secondaryTextColor = Color(0xFFFFF2D0),
-    leafImageRes = R.drawable.ic_professional_wallet,
-    icWallet = R.drawable.ic_professional_wallet,
-    icScanner = R.drawable.ic_professional_scanner,
-    icTransfer = R.drawable.ic_professional_transfer,
-    icCard = R.drawable.ic_professional_card,
-    icDeposit = R.drawable.ic_professional_deposit,
-    icLoan = R.drawable.ic_professional_loan,
-    icPayment = R.drawable.ic_professional_payment,
-    icTopup = R.drawable.ic_professional_topup,
-    icQuickCash = R.drawable.ic_professional_quickcash,
-    icSchool = R.drawable.ic_professional_school,
-    icDepartment = R.drawable.ic_professional_department,
-    icExchange = R.drawable.ic_professional_exchange,
-    previewImageRes = R.drawable.img_gold_background
+    sheetContainerColor = Color(0xFF171209),
+    sheetContentColor = Color(0xFF5B421D),
+    primaryTextColor = Color(0xFFFFF1C9),
+    cardBackgroundColor = Color(0xFF000000),
+    secondaryTextColor = Color(0xFFE8CD84),
+    leafImageRes = null,
+    icWallet = R.drawable.ic_gold_premium_wallet,
+    icScanner = R.drawable.ic_gold_premium_scanner,
+    icTransfer = R.drawable.ic_gold_premium_transfer,
+    icCard = R.drawable.ic_gold_premium_card,
+    icDeposit = R.drawable.ic_gold_premium_deposit,
+    icLoan = R.drawable.ic_gold_premium_loan,
+    icPayment = R.drawable.ic_gold_premium_payment,
+    icTopup = R.drawable.ic_gold_premium_topup,
+    icQuickCash = R.drawable.ic_gold_premium_quickcash,
+    icSchool = R.drawable.ic_gold_premium_school,
+    icDepartment = R.drawable.ic_gold_premium_department,
+    icExchange = R.drawable.ic_gold_premium_exchange,
+    previewImageRes = R.drawable.img_golden_preview_light,
+    useGlassEffect = false,
+    logoRes = R.drawable.img_ac_logo_white
 )
 
-val HalloweenTheme = CardTheme(
+val GoldDarkTheme = CardTheme(
+    name = "Gold Dark",
+    backgroundRes = R.drawable.img_gold_dark_background,
+    buttonColor = Color(0xFFC5A059),
+    buttonTextColor = Color(0xFF100F0C),
+    iconBorderColor = Color(0xFFF1D782),
+    iconCornerRadius = 14.dp,
+    themeImages = listOf(
+        R.drawable.img_def_theme1,
+        R.drawable.img_def_theme2,
+        R.drawable.img_def_theme3,
+        R.drawable.img_def_theme4,
+    ),
+    sheetContainerColor = Color(0xFF0C0C0B),
+    sheetContentColor = Color(0xFF383127),
+    primaryTextColor = Color(0xFFF5DEA0),
+    cardBackgroundColor = Color(0xFF252422),
+    secondaryTextColor = Color(0xFFE2D3B1),
+    leafImageRes = null,
+    icWallet = R.drawable.ic_gold_premium_wallet,
+    icScanner = R.drawable.ic_gold_premium_scanner,
+    icTransfer = R.drawable.ic_gold_premium_transfer,
+    icCard = R.drawable.ic_gold_premium_card,
+    icDeposit = R.drawable.ic_gold_premium_deposit,
+    icLoan = R.drawable.ic_gold_premium_loan,
+    icPayment = R.drawable.ic_gold_premium_payment,
+    icTopup = R.drawable.ic_gold_premium_topup,
+    icQuickCash = R.drawable.ic_gold_premium_quickcash,
+    icSchool = R.drawable.ic_gold_premium_school,
+    icDepartment = R.drawable.ic_gold_premium_department,
+    icExchange = R.drawable.ic_gold_premium_exchange,
+    previewImageRes = R.drawable.img_golden_preview,
+    useGlassEffect = false,
+    logoRes = R.drawable.img_ac_logo_white
+)
+
+val ClassicRetroTheme = CardTheme(
+    name = "Classic Retro",
+    backgroundRes = R.drawable.img_retro_professional_background,
+    buttonColor = Color(0xFF173246),
+    buttonTextColor = Color(0xFF173246),
+    iconBorderColor = Color(0xFFE9DEC8),
+    iconCornerRadius = 12.dp,
+    themeImages = listOf(
+        R.drawable.img_def_theme1,
+        R.drawable.img_def_theme2,
+        R.drawable.img_def_theme3,
+        R.drawable.img_def_theme4,
+    ),
+    sheetContainerColor = Color(0xFF173246),
+    sheetContentColor = Color(0xFF4D7775),
+    primaryTextColor = Color(0xFFF4E8D3),
+    cardBackgroundColor = Color(0xFF0F172A),
+    secondaryTextColor = Color(0xFFE9DEC8),
+    leafImageRes = null,
+    icWallet = R.drawable.ic_retro_wallet,
+    icScanner = R.drawable.ic_retro_scanner,
+    icTransfer = R.drawable.ic_retro_transfer,
+    icCard = R.drawable.ic_retro_card,
+    icDeposit = R.drawable.ic_retro_deposit,
+    icLoan = R.drawable.ic_retro_loan,
+    icPayment = R.drawable.ic_retro_payment,
+    icTopup = R.drawable.ic_retro_topup,
+    icQuickCash = R.drawable.ic_retro_quickcash,
+    icSchool = R.drawable.ic_retro_school,
+    icDepartment = R.drawable.ic_retro_department,
+    icExchange = R.drawable.ic_retro_exchange,
+    previewImageRes = R.drawable.img_classic_retro_theme_preview,
+    useGlassEffect = false,
+    logoRes = R.drawable.img_ac_logo_white
+)
+
+val EmblemProfessionalTheme = CardTheme(
+    name = "Default",
+    backgroundRes = R.drawable.img_emblem_professional_background,
+    buttonColor = Color(0xFFF1D877),
+    buttonTextColor = Color(0xFF102A4A),
+    iconBorderColor = Color(0xFFF7F7F5),
+    iconCornerRadius = 16.dp,
+    themeImages = listOf(R.drawable.img_def_theme1, R.drawable.img_def_theme2, R.drawable.img_def_theme3, R.drawable.img_def_theme4),
+    sheetContainerColor = Color(0xFF102A4A),
+    sheetContentColor = Color(0xFF1E4475),
+    primaryTextColor = Color(0xFFF7F7F5),
+    cardBackgroundColor = Color(0xFF0F172A),
+    secondaryTextColor = Color(0xFFF1D877),
+    leafImageRes = null,
+    icWallet = R.drawable.ic_retro_wallet,
+    icScanner = R.drawable.ic_retro_scanner,
+    icTransfer = R.drawable.ic_retro_transfer,
+    icCard = R.drawable.ic_retro_card,
+    icDeposit = R.drawable.ic_retro_deposit,
+    icLoan = R.drawable.ic_retro_loan,
+    icPayment = R.drawable.ic_retro_payment,
+    icTopup = R.drawable.ic_retro_topup,
+    icQuickCash = R.drawable.ic_retro_quickcash,
+    icSchool = R.drawable.ic_retro_school,
+    icDepartment = R.drawable.ic_retro_department,
+    icExchange = R.drawable.ic_retro_exchange,
+    previewImageRes = R.drawable.img_emblem_professional_background,
+    useGlassEffect = false,
+    logoRes = R.drawable.img_ac_logo_white
+)
+
+val ExecutiveTheme = ClassicRetroTheme.copy(
+    name = "Executive",
+    backgroundRes = R.drawable.img_executive_background,
+    buttonColor = Color(0xFFC9A45B),
+    buttonTextColor = Color(0xFF2A1219),
+    iconBorderColor = Color(0xFFF4EBDD),
+    sheetContainerColor = Color(0xFF2A1219),
+    sheetContentColor = Color(0xFF4A1F2A),
+    primaryTextColor = Color(0xFFF4EBDD),
+    cardBackgroundColor = Color(0xFF3A1822),
+    secondaryTextColor = Color(0xFFE5C98E),
+    previewImageRes = R.drawable.img_executive_background,
+    logoRes = R.drawable.img_ac_logo_white
+)
+
+
+val Professonal1 = CardTheme(
     name = "Halloween",
     backgroundRes = R.drawable.img_halloween_background,
     buttonColor = Color(0xFFD97706),
@@ -633,7 +792,7 @@ val HalloweenTheme = CardTheme(
     previewImageRes = R.drawable.img_halloween_background
 )
 
-val AllThemes = listOf(AutumnTheme, CherryBlossomTheme, MatchaTheme, LagoonTheme, ProfessionalTheme, SapphireTheme, HarborTheme, MidnightTheme, RomdoulTheme, MonochromeTheme, GoldTheme)
+val AllThemes = listOf( ClassicRetroTheme, EmblemProfessionalTheme, ExecutiveTheme,GoldTheme, GoldDarkTheme, RomdoulTheme, RomdoulDarkTheme, AutumnTheme, CherryBlossomTheme, MatchaTheme, LagoonTheme, ProfessionalTheme, SapphireTheme, HarborTheme, MidnightTheme, MonochromeTheme,)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
